@@ -1,0 +1,11 @@
+{
+  "name": "magang-fullstack",
+  "version": "1.0.0",
+  "description": "project fullstack internship at winnicode",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Anggun Caksono",
+  "license": "ISC"
+}
