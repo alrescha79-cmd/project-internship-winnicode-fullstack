@@ -1,0 +1,63 @@
+---
+import { getCollection } from "astro:content";
+import type { CollectionEntry } from "astro:content";
+import BlogCategory from "@components/blog/BlogCategory.astro";
+import { timeago } from "@support/time";
+import SidebarLayout from "@/layouts/SidebarLayout.astro";
+
+const postMap: Map<string, CollectionEntry<"posts">[]> = (
+    await getCollection("posts")
+)
+    .sort(
+        (a: CollectionEntry<"posts">, b: CollectionEntry<"posts">) =>
+            b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+    )
+    .reduce((acc, obj) => {
+        let posts = acc.get(obj.data.category);
+        if (!posts) {
+            posts = [];
+        }
+        posts.push(obj);
+
+        acc.set(obj.data.category, posts);
+
+        return acc;
+    }, new Map<string, CollectionEntry<"posts">[]>());
+
+const categories = await getCollection("categories");
+---
+
+<SidebarLayout title="Kategori">
+    <div>
+        <h1 class="text-2xl font-semibold">Kategori Berita</h1>
+    </div>
+    <div class="flex flex-col space-y-4">
+        <div class="flex flex-col space-y-4">
+            <div class="flex items-center justify-between">
+                <a
+                    href="#"
+                    class="border border-black rounded-xl p-4 my-4 font-bold"
+                >
+                    Tambah Kategori
+                </a>
+            </div>
+            <div
+                class="grid sm:grid-cols-2 lg:grid-cols-3 items-center gap-6 md:gap-10"
+            >
+                {
+                    categories.map(c => (
+                        <BlogCategory
+                            slug={c.slug}
+                            title={c.data.title}
+                            description={c.data.description}
+                            count={postMap.get(c.slug)?.length ?? 0}
+                            publishDate={timeago(
+                                postMap.get(c.slug)?.[0]?.data?.pubDate,
+                            )}
+                        />
+                    ))
+                }
+            </div>
+        </div>
+    </div>
+</SidebarLayout>
