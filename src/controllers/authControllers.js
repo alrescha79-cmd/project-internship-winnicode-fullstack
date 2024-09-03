@@ -8,14 +8,16 @@ exports.login = async (req, res) => {
 
         res.status(200).json({
             message: 'Login success',
-            data
+            idToken: data.idToken,
+            refreshToken: data.refreshToken,
+            expiresIn: data.expiresIn
         });
     } catch (error) {
         console.log(error.response ? error.response.data : error.message);
         if (error.response) {
             res.status(401).json({ message: 'Invalid email or password' });
         } else {
-            res.status(500).json({ message: 'Internal Server Error' });
+            next(error);
         }
     }
 };

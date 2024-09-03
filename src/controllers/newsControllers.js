@@ -16,9 +16,13 @@ exports.getAllNews = async (req, res) => {
     }
 };
 
-exports.getNewsById = async (req, res) => {
+exports.getNewsById = async (req, res, next) => {
     try {
-        const newsId = req.params.id;
+        const newsId = req.params.id || req.query.id;
+        if (!newsId) {
+            return res.status(400).json({ message: 'News ID is required' });
+        }
+
         const news = await NewsModel.getNewsById(newsId);
         res.status(200).json({
             message: 'News retrieved successfully',
@@ -31,6 +35,7 @@ exports.getNewsById = async (req, res) => {
         next(error);
     }
 };
+
 
 exports.createNews = async (req, res) => {
     try {
