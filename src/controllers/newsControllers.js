@@ -1,53 +1,34 @@
-const { admin, db } = require('../config/Firebase');
-
+const NewsModel = require('../models/newsModel');
+const { db } = require('../config/Firebase');
 
 exports.getAllNews = async (req, res) => {
     try {
-        const newsRef = db.collection('news');
-        const snapshot = await newsRef.get();
-
-        if (snapshot.empty) {
+        const newsList = await NewsModel.getAllNews();
+        if (newsList.length === 0) {
             return res.status(404).json({ message: 'No news found' });
         }
-
-        const newsList = [];
-        snapshot.forEach(doc => {
-            newsList.push({
-                id: doc.id,
-                ...doc.data()
-            });
-        });
-
         res.status(200).json({
             message: 'News retrieved successfully',
             data: newsList
         });
     } catch (error) {
-        console.log(error);
-        res.status(500).json({ message: 'Internal Server Error' });
+        next(error);
     }
 };
 
 exports.getNewsById = async (req, res) => {
     try {
         const newsId = req.params.id;
-        const newsRef = db.collection('news').doc(newsId);
-        const doc = await newsRef.get();
-
-        if (!doc.exists) {
-            return res.status(404).json({ message: 'News not found' });
-        }
-
+        const news = await NewsModel.getNewsById(newsId);
         res.status(200).json({
             message: 'News retrieved successfully',
-            data: {
-                id: doc.id,
-                ...doc.data()
-            }
+            data: news
         });
     } catch (error) {
-        console.log(error);
-        res.status(500).json({ message: 'Internal Server Error' });
+        if (error.message === 'News not found') {
+            return res.status(404).json({ message: error.message });
+        }
+        next(error);
     }
 };
 
@@ -62,28 +43,13 @@ exports.createNews = async (req, res) => {
         }
         const authorName = userDoc.data().name;
 
-        const newsRef = db.collection('news');
-        const doc = await newsRef.add({
-            title,
-            content,
-            author: authorName,
-            authorId: userId,
-            createdAt: admin.firestore.FieldValue.serverTimestamp()
-        });
-
+        const news = await NewsModel.createNews({ title, content, authorName, authorId: userId });
         res.status(201).json({
             message: 'News created successfully',
-            data: {
-                id: doc.id,
-                title,
-                content,
-                author: authorName,
-                authorId: userId
-            }
+            data: news
         });
     } catch (error) {
-        console.log(error);
-        res.status(500).json({ message: 'Internal Server Error' });
+        next(error);
     }
 };
 
@@ -91,53 +57,31 @@ exports.updateNews = async (req, res) => {
     try {
         const { id } = req.params;
         const { title, content } = req.body;
-        const newsRef = db.collection('news').doc(id);
-        const doc = await newsRef.get();
-
-        if (!doc.exists) {
-            res.status(404).json({ message: 'News not found' });
-        } else {
-            await newsRef.update({ title, content });
-
-            res.status(200).json({
-                message: 'News updated successfully',
-                data: {
-                    id: doc.id,
-                    title,
-                    content,
-                    lastEdit: admin.firestore.FieldValue.serverTimestamp()
-                }
-            });
-        }
+        const updatedNews = await NewsModel.updateNews(id, { title, content });
+        res.status(200).json({
+            message: 'News updated successfully',
+            data: updatedNews
+        });
     } catch (error) {
-        console.log(error);
-        res.status(500).json({ message: 'Internal Server Error' });
+        if (error.message === 'News not found') {
+            return res.status(404).json({ message: error.message });
+        }
+        next(error);
     }
-}
+};
 
 exports.deleteNews = async (req, res) => {
     try {
         const { id } = req.params;
-        const newsRef = db.collection('news').doc(id);
-        const doc = await newsRef.get();
-
-        if (!doc.exists) {
-            res.status(404).json({ message: 'News not found' });
-        } else {
-            await newsRef.delete();
-
-            res.status(200).json({
-                message: 'News deleted successfully',
-                data: {
-                    id: doc.id,
-                    ...doc.data()
-                }
-            });
-        }
+        const deletedNews = await NewsModel.deleteNews(id);
+        res.status(200).json({
+            message: 'News deleted successfully',
+            data: deletedNews
+        });
     } catch (error) {
-        console.log(error);
-        res.status(500).json({ message: 'Internal Server Error' });
+        if (error.message === 'News not found') {
+            return res.status(404).json({ message: error.message });
+        }
+        next(error);
     }
-}
-
-
+};

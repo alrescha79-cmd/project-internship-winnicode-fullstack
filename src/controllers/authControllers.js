@@ -1,20 +1,14 @@
-const axios = require('axios');
-require('dotenv').config();
-const { admin, db } = require('../config/Firebase');
+const authService = require('../services/authService');
 
 exports.login = async (req, res) => {
     try {
         const { email, password } = req.body;
 
-        const response = await axios.post(process.env.URL_LOGIN, {
-            email,
-            password,
-            returnSecureToken: true
-        });
+        const data = await authService.login(email, password);
 
         res.status(200).json({
             message: 'Login success',
-            data: response.data
+            data
         });
     } catch (error) {
         console.log(error.response ? error.response.data : error.message);
@@ -30,16 +24,13 @@ exports.refreshToken = async (req, res) => {
     try {
         const { refreshToken } = req.body;
 
-        const response = await axios.post(`https://securetoken.googleapis.com/v1/token?key=${process.env.API_KEY}`, {
-            grant_type: 'refresh_token',
-            refresh_token: refreshToken
-        });
+        const data = await authService.refreshAuthToken(refreshToken);
 
         res.status(200).json({
             message: 'Token refreshed successfully',
-            idToken: response.data.id_token,
-            refreshToken: response.data.refresh_token,
-            expiresIn: response.data.expires_in
+            idToken: data.id_token,
+            refreshToken: data.refresh_token,
+            expiresIn: data.expires_in
         });
     } catch (error) {
         console.log(error.response ? error.response.data : error.message);
@@ -51,13 +42,11 @@ exports.logout = async (req, res) => {
     try {
         const { idToken } = req.body;
 
-        await axios.post(`https://identitytoolkit.googleapis.com/v1/accounts:signOut?key=${process.env.API_KEY}`, {
-            idToken
-        });
+        await authService.logout(idToken);
 
         res.status(200).json({ message: 'Logout success' });
     } catch (error) {
         console.log(error.response ? error.response.data : error.message);
         res.status(500).json({ message: 'Failed to logout' });
     }
-}
+};

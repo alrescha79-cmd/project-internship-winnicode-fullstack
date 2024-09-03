@@ -3,10 +3,13 @@ const authRoutes = require('./routes/authRoutes');
 const newsRoutes = require('./routes/newsRoutes');
 const journalistRoutes = require('./routes/journalistRoutes');
 const bodyParser = require('body-parser');
+const errorHandler = require('./utils/errorHandler');
 
 const app = express();
 
 app.use(bodyParser.json());
+
+app.use(errorHandler);
 
 app.use('/news', newsRoutes);
 app.use('/auth', authRoutes);
