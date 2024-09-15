@@ -36,14 +36,14 @@ const _nav = [
   },
   {
     component: CNavItem,
-    name: 'Dokter',
-    to: '/dokter',
+    name: 'Kategory Berita',
+    to: '/news/category',
     icon: <CIcon icon={cilUserFemale} customClassName="nav-icon" />,
   },
   {
     component: CNavItem,
-    name: 'Laporan',
-    to: '/laporan',
+    name: 'Penulis',
+    to: '/author',
     icon: <CIcon icon={cilChart} customClassName="nav-icon" />,
   },
 ]

@@ -5,13 +5,12 @@ const AppFooter = () => {
   return (
     <CFooter className="px-4">
       <div>
-        <a href="#" target="_blank" rel="noopener noreferrer">
-          MiRA
+        <a href="https://cakson.my.id/" target="_blank" rel="noopener noreferrer">
+          Create By Anggun Caksono
         </a>
-        <span className="ms-1">&copy; 2024 MiRa Developer Teams.</span>
       </div>
       <div className="ms-auto">
-        <p className="mt-2 fw-bold">Bangkit Academy 2024 Batch 1</p>
+        <p className="mt-2 fw-bold">Winnicode Garuda Teknologi</p>
       </div>
     </CFooter>
   )
