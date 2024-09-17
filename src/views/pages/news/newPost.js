@@ -7,13 +7,15 @@ const newPost = () => {
       <div>
         <h1 className="text-center mb-4">Posting Berita </h1>
         <div className="flex gap-2">
-          <CFormInput
-            className="my-2"
-            placeholder="Judul Berita"
-            id="floatingInput"
-            floatingLabel="Judul Berita"
-            type="text"
-          />
+          <CForm>
+            <CFormInput
+              type="text"
+              id="exampleFormControlInput1"
+              label="Judul Berita"
+              placeholder="Judul Berita"
+              aria-describedby="exampleFormControlInputHelpInline"
+            />
+          </CForm>
           <div className="mt-4">
             <CFormInput type="file" size="lg" id="formFileLg" label="Thumbnail Berita" />
           </div>
@@ -38,7 +40,7 @@ const newPost = () => {
               ]}
             />
           </div>
-          <div className="mt-4">
+          <div>
             <button className="btn btn-primary">Post Berita</button>
           </div>
         </div>

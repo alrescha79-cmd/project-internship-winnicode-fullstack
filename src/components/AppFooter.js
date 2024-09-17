@@ -3,7 +3,7 @@ import { CFooter } from '@coreui/react'
 
 const AppFooter = () => {
   return (
-    <CFooter className="px-4">
+    <CFooter className="px-32">
       <div>
         <a href="https://cakson.my.id/" target="_blank" rel="noopener noreferrer">
           Create By Anggun Caksono
