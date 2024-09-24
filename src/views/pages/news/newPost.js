@@ -20,6 +20,17 @@ const newPost = () => {
             <CFormInput type="file" size="lg" id="formFileLg" label="Thumbnail Berita" />
           </div>
           <div className="mt-4">
+            <CFormSelect
+              aria-label="Kategori Berita"
+              options={[
+                'Silakan pilih kategori berita',
+                { label: 'One', value: '1' },
+                { label: 'Two', value: '2' },
+                { label: 'Three', value: '3'},
+              ]}
+            />
+          </div>
+          <div className="mt-4">
             <CForm>
               <CFormTextarea
                 id="exampleFormControlTextarea1"
@@ -29,19 +40,8 @@ const newPost = () => {
               ></CFormTextarea>
             </CForm>
           </div>
-          <div className="mt-4">
-            <CFormSelect
-              aria-label="Kategori Berita"
-              options={[
-                'Silakan pilih kategori berita',
-                { label: 'One', value: '1' },
-                { label: 'Two', value: '2' },
-                { label: 'Three', value: '3', disabled: true },
-              ]}
-            />
-          </div>
           <div>
-            <button className="btn btn-primary">Post Berita</button>
+            <button className="btn btn-primary mt-4">Post Berita</button>
           </div>
         </div>
       </div>

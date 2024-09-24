@@ -1,138 +1,88 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import DataTableComponent from '../../../../src/components/DataTable'
-
-const columns = (navigate, reloadData) => [
-  {
-    name: 'Judul Berita',
-    selector: (row) => row.title,
-    sortable: true,
-  },
-  {
-    name: 'Penulis',
-    selector: (row) => row.author,
-    sortable: true,
-  },
-  {
-    name: 'Tanggal Posting',
-    selector: (row) => row.date,
-    sortable: true,
-  },
-  {
-    name: 'Kategori',
-    selector: (row) => row.category,
-    sortable: true,
-  },
-  {
-    name: 'Action',
-    cell: (row) => (
-      <div>
-        <button
-          className="btn btn-secondary text-white m-1"
-          onClick={() => navigate(`/news/${row.id}`)}
-        >
-          Edit
-        </button>
-        <button
-          className="btn btn-success text-white m-1"
-          onClick={() => confirmAppointment(row.id, reloadData)}
-        >
-          Hapus
-        </button>
-      </div>
-    ),
-  },
-]
+import useFirebaseAuthToken from '../../../hook/useFirebaseAuthToken'
+import { fetchData } from '../../../api'
+import { CButton, CTable, CTableBody, CTableDataCell, CTableHead, CTableHeaderCell, CTableRow } from '@coreui/react'
 
 const News = () => {
+  const [data, setData] = useState(null)
+  const token = useFirebaseAuthToken()
   const navigate = useNavigate()
-  const [data, setData] = useState([])
-  const [categoryFilter, setCategoryFilter] = useState('')
-  const [searchName, setSearchName] = useState('')
-
-  const News = [
-    {
-      id: 1,
-      title: 'Berita 1',
-      author: 'Penulis 1',
-      date: '2023-01-01',
-      category: 'Kategori 1',
-    },
-    {
-      id: 2,
-      title: 'Berita 2',
-      author: 'Penulis 2',
-      date: '2023-01-02',
-      category: 'Kategori 2',
-    },
-    {
-      id: 3,
-      title: 'Berita 3',
-      author: 'Penulis 3',
-      date: '2023-01-03',
-      category: 'Kategori 3',
-    },
-  ]
-
-  const loadData = () => {
-    let filteredData = News
-
-    if (categoryFilter) {
-      filteredData = filteredData.filter((row) => row.category === categoryFilter)
-    }
-
-    if (searchName) {
-      filteredData = filteredData.filter((row) =>
-        row.title.toLowerCase().includes(searchName.toLowerCase()),
-      )
-    }
-
-    const sortedData = filteredData.sort((a, b) => {
-      const dateA = new Date(a.date)
-      const dateB = new Date(b.date)
-      return dateA - dateB
-    })
-
-    setData(sortedData)
-  }
-
-  const reloadData = () => {
-    loadData()
-  }
 
   useEffect(() => {
-    loadData()
-  }, [categoryFilter, searchName])
+    const getData = async () => {
+      if (token) {
+        try {
+          const response = await fetchData('http://localhost:3000/news', token)
+          setData(response.data)
+          // console.log(response.data)
+        } catch (error) {
+          console.error('Error fetching data:', error)
+        }
+      }
+    }
 
-  const uniqueCategories = [...new Set(News.map((item) => item.category))]
+    getData()
+  }, [token])
 
-  const filterOptions = {
-    field: 'category',
-    allLabel: 'Semua Kategori',
-    default: '',
-    options: uniqueCategories.map((category) => ({
-      value: category,
-      label: category,
-    })),
+  const handleEdit = (id) => {
+    navigate(`/news/edit/${id}`)
+    // alert(`Edit news with id: ${id}`)
   }
 
-  const searchOptions = {
-    field: 'title',
-    placeholder: 'Cari Judul Berita',
+  const handleDelete = (id) => {
+    alert(`Delete news with id: ${id}`)
   }
 
   return (
     <div>
-      <DataTableComponent
-        columns={columns(navigate, reloadData)}
-        data={data}
-        filterOptions={filterOptions}
-        searchOptions={searchOptions}
-        onFilterChange={setCategoryFilter}
-        onSearchChange={setSearchName}
-      />
+      {getAllNews(data, handleEdit, handleDelete)}
     </div>
   )
 }
 
 export default News
+
+function getAllNews(news, handleEdit, handleDelete) {
+  return (
+    <CTable className='mt-4' striped>
+      <CTableHead>
+        <CTableRow>
+          <CTableHeaderCell scope="col">No.</CTableHeaderCell>
+          <CTableHeaderCell scope="col">Judul Berita</CTableHeaderCell>
+          <CTableHeaderCell scope="col">Penulis</CTableHeaderCell>
+          <CTableHeaderCell scope="col">Tanggal</CTableHeaderCell>
+          <CTableHeaderCell scope="col">Aksi</CTableHeaderCell>
+        </CTableRow>
+      </CTableHead>
+      <CTableBody>
+        {Array.isArray(news) && news.length > 0 ? (
+          news.map((newsItem, index) => (
+            <CTableRow key={newsItem.id}>
+              <CTableHeaderCell scope="row">{index + 1}</CTableHeaderCell>
+              <CTableDataCell>{newsItem.title}</CTableDataCell>
+              <CTableDataCell>{newsItem.author}</CTableDataCell>
+              <CTableDataCell>{formatDate(newsItem.createdAt)}</CTableDataCell>
+              <CTableDataCell>
+                <CButton color="primary" className='me-2' onClick={() => handleEdit(newsItem.id)}>Edit</CButton>
+                <CButton color="danger" onClick={() => handleDelete(newsItem.id)}>Hapus</CButton>
+              </CTableDataCell>
+            </CTableRow>
+          ))
+        ) : (
+          <CTableRow>
+            <CTableDataCell colSpan="5" className="text-center">Loading...</CTableDataCell>
+          </CTableRow>
+        )}
+      </CTableBody>
+    </CTable>
+  )
+}
+
+function formatDate(timestamp) {
+  if (timestamp && typeof timestamp._seconds === 'number' && typeof timestamp._nanoseconds === 'number') {
+    const date = new Date(timestamp._seconds * 1000 + timestamp._nanoseconds / 1000000)
+    return date.toLocaleDateString()
+  }
+  return 'Invalid Date'
+}
