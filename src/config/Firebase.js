@@ -1,20 +1,18 @@
-// Import the functions you need from the SDKs you need
 require('dotenv').config();
 const admin = require('firebase-admin');
+const { initializeApp, applicationDefault, cert } = require('firebase-admin/app');
+const { getFirestore } = require('firebase-admin/firestore');
+const { getStorage } = require('firebase-admin/storage');
 
-// Load the Firebase service account key
+
 const serviceAccount = require('../../adminsdk.json');
 
-// Initialize Firebase Admin SDK
 admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
     storageBucket: process.env.STORAGE_BUCKET
 });
 
-// Firestore database instance
-const db = admin.firestore();
+const db = getFirestore();
+const storage = getStorage();
 
-// Storage bucket instance
-const bucket = admin.storage().bucket();
-
-module.exports = { admin, db, bucket };
+module.exports = { admin, db, storage };

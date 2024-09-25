@@ -1,5 +1,6 @@
-const { db, admin } = require('../config/Firebase');
+const { db, admin, storage } = require('../config/Firebase');
 const slugify = require('slugify');
+const { v4: uuidv4 } = require('uuid');
 
 const NewsModel = {
     async getAllNews() {
@@ -25,7 +26,7 @@ const NewsModel = {
         };
     },
 
-    async createNews({ title, content, authorName, authorId, category }) {
+    async createNews({ title, content, authorName, authorId, category, thumbnail }) {
         // Check if title already exists
         const existingNews = await db.collection('news').where('title', '==', title).get();
         if (!existingNews.empty) {
@@ -33,6 +34,20 @@ const NewsModel = {
         }
 
         const slug = slugify(title, { lower: true });
+
+        // Upload thumbnail to Cloud Storage
+        const bucket = storage.bucket();
+        const thumbnailRef = bucket.file(`thumbnails/${uuidv4()}`);
+        await thumbnailRef.save(thumbnail.buffer, {
+            metadata: {
+                contentType: thumbnail.mimetype
+            }
+        });
+        const thumbnailURL = await thumbnailRef.getSignedUrl({
+            action: 'read',
+            expires: '03-09-2491'
+        });
+
         const newsRef = db.collection('news');
         const doc = await newsRef.add({
             title,
@@ -41,6 +56,7 @@ const NewsModel = {
             authorId: authorId,
             slug,
             category,
+            thumbnailURL: thumbnailURL[0],
             createdAt: admin.firestore.FieldValue.serverTimestamp()
         });
 
@@ -56,11 +72,12 @@ const NewsModel = {
             author: authorName,
             authorId: authorId,
             slug,
-            category
+            category,
+            thumbnailURL: thumbnailURL[0]
         };
     },
 
-    async updateNews(newsId, { title, content, category }) {
+    async updateNews(newsId, { title, content, category, thumbnail }) {
         const newsRef = db.collection('news').doc(newsId);
         const doc = await newsRef.get();
         if (!doc.exists) {
@@ -75,14 +92,31 @@ const NewsModel = {
 
         const slug = slugify(title, { lower: true });
 
+        let thumbnailURL = doc.data().thumbnailURL;
+        if (thumbnail) {
+            // Upload new thumbnail to Cloud Storage
+            const bucket = storage.bucket();
+            const thumbnailRef = bucket.file(`thumbnails/${uuidv4()}`);
+            await thumbnailRef.save(thumbnail.buffer, {
+                metadata: {
+                    contentType: thumbnail.mimetype
+                }
+            });
+            thumbnailURL = (await thumbnailRef.getSignedUrl({
+                action: 'read',
+                expires: '03-09-2491'
+            }))[0];
+        }
+
         await newsRef.update({
             title,
             content,
             slug,
             category,
+            thumbnailURL,
             lastEdit: admin.firestore.FieldValue.serverTimestamp()
         });
-        return { id: newsId, title, content, slug, category };
+        return { id: newsId, title, content, slug, category, thumbnailURL };
     },
 
     async deleteNews(newsId) {

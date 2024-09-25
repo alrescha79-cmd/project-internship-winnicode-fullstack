@@ -42,6 +42,7 @@ exports.createNews = async (req, res, next) => {
     try {
         const { title, content, category } = req.body;
         const userId = req.user.uid;
+        const thumbnail = req.file; // Assuming you're using multer to handle file uploads
 
         const userDoc = await db.collection('journalist').doc(userId).get();
         if (!userDoc.exists) {
@@ -51,7 +52,7 @@ exports.createNews = async (req, res, next) => {
 
         const slug = slugify(title, { lower: true });
 
-        const news = await NewsModel.createNews({ title, content, authorName, authorId: userId, category });
+        const news = await NewsModel.createNews({ title, content, authorName, authorId: userId, category, thumbnail });
         res.status(201).json({
             message: 'News created successfully',
             data: news
@@ -74,10 +75,11 @@ exports.updateNews = async (req, res, next) => {
     try {
         const { id } = req.params;
         const { title, content, category } = req.body;
+        const thumbnail = req.file; // Assuming you're using multer to handle file uploads
 
         const slug = slugify(title, { lower: true });
 
-        const updatedNews = await NewsModel.updateNews(id, { title, content, category });
+        const updatedNews = await NewsModel.updateNews(id, { title, content, category, thumbnail });
         res.status(200).json({
             message: 'News updated successfully',
             data: updatedNews
