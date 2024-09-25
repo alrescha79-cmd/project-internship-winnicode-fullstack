@@ -27,7 +27,7 @@ const Dashboard = () => {
       <h1>Dashboard</h1>
       <ul>
         {Array.isArray(data) ? (
-          data.map((item) => <li key={item.id}>{item.title}</li>)
+          data.map((item) => <li key={item.id}>{item.category}</li>)
         ) : (
           <li>Loading...</li>
         )}

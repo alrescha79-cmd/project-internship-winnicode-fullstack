@@ -32,6 +32,7 @@ const News = () => {
 
   const handleDelete = (id) => {
     alert(`Delete news with id: ${id}`)
+
   }
 
   return (
@@ -50,8 +51,10 @@ function getAllNews(news, handleEdit, handleDelete) {
         <CTableRow>
           <CTableHeaderCell scope="col">No.</CTableHeaderCell>
           <CTableHeaderCell scope="col">Judul Berita</CTableHeaderCell>
+          <CTableHeaderCell scope="col">Kategory Berita</CTableHeaderCell>
           <CTableHeaderCell scope="col">Penulis</CTableHeaderCell>
           <CTableHeaderCell scope="col">Tanggal</CTableHeaderCell>
+          <CTableHeaderCell scope="col">Waktu</CTableHeaderCell>
           <CTableHeaderCell scope="col">Aksi</CTableHeaderCell>
         </CTableRow>
       </CTableHead>
@@ -61,8 +64,10 @@ function getAllNews(news, handleEdit, handleDelete) {
             <CTableRow key={newsItem.id}>
               <CTableHeaderCell scope="row">{index + 1}</CTableHeaderCell>
               <CTableDataCell>{newsItem.title}</CTableDataCell>
+              <CTableDataCell>{newsItem.category || 'Uncategorized'}</CTableDataCell>
               <CTableDataCell>{newsItem.author}</CTableDataCell>
               <CTableDataCell>{formatDate(newsItem.createdAt)}</CTableDataCell>
+              <CTableDataCell>{formatTime(newsItem.createdAt)}</CTableDataCell>
               <CTableDataCell>
                 <CButton color="primary" className='me-2' onClick={() => handleEdit(newsItem.id)}>Edit</CButton>
                 <CButton color="danger" onClick={() => handleDelete(newsItem.id)}>Hapus</CButton>
@@ -85,4 +90,12 @@ function formatDate(timestamp) {
     return date.toLocaleDateString()
   }
   return 'Invalid Date'
+}
+
+function formatTime(timestamp) {
+  if (timestamp && typeof timestamp._seconds === 'number' && typeof timestamp._nanoseconds === 'number') {
+    const date = new Date(timestamp._seconds * 1000 + timestamp._nanoseconds / 1000000)
+    return date.toLocaleTimeString()
+  }
+  return 'Invalid Time'
 }

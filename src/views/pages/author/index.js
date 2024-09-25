@@ -106,8 +106,7 @@ function listAuthors(authors) {
             <CTableHeaderCell scope="row">{index + 1}</CTableHeaderCell>
             <CTableDataCell>{author.name}</CTableDataCell>
             <CTableDataCell>{author.email}</CTableDataCell>
-            <CTableDataCell>10</CTableDataCell>
-            {/* <CTableDataCell>{author.postsCount || 0}</CTableDataCell> */}
+            <CTableDataCell>{author.postCount || 0}</CTableDataCell>
           </CTableRow>
         ))
       ) : (
@@ -127,8 +126,8 @@ function journalist(data) {
         <CCardTitle>{data ? data.name : 'Loading...'}</CCardTitle>
         <CCardText>
           Email: {data ? data.email : 'Loading...'}<br />
-          <br />
-          Nomor Hp: {data ? data.phone : 'Loading...'}
+          <hr />
+          Jumlah Postingan: <b>{data ? data.postCount || 'Belum Ada Postingan' : 'Loading...'}</b>
         </CCardText>
         <CButton color="primary" href="#">Ubah</CButton>
       </CCardBody>
