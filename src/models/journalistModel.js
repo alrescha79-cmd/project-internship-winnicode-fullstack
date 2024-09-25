@@ -67,6 +67,11 @@ const Journalist = {
 
         await admin.auth().deleteUser(journalistId);
         await journalistDoc.delete();
+    },
+
+    async getPostCount(journalistId) {
+        const newsSnapshot = await db.collection('news').where('authorId', '==', journalistId).get();
+        return newsSnapshot.size;
     }
 };
 

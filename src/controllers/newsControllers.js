@@ -1,7 +1,9 @@
 const NewsModel = require('../models/newsModel');
-const { db } = require('../config/Firebase');
+const Journalist = require('../models/journalistModel');
+const { db, admin } = require('../config/Firebase');
+const slugify = require('slugify');
 
-exports.getAllNews = async (req, res) => {
+exports.getAllNews = async (req, res, next) => {
     try {
         const newsList = await NewsModel.getAllNews();
         if (newsList.length === 0) {
@@ -36,52 +38,79 @@ exports.getNewsById = async (req, res, next) => {
     }
 };
 
-
-exports.createNews = async (req, res) => {
+exports.createNews = async (req, res, next) => {
     try {
-        const { title, content } = req.body;
+        const { title, content, category } = req.body;
         const userId = req.user.uid;
 
         const userDoc = await db.collection('journalist').doc(userId).get();
         if (!userDoc.exists) {
-            return res.status(404).json({ message: 'journalist not found' });
+            return res.status(404).json({ message: 'Journalist not found' });
         }
         const authorName = userDoc.data().name;
 
-        const news = await NewsModel.createNews({ title, content, authorName, authorId: userId });
+        const slug = slugify(title, { lower: true });
+
+        const news = await NewsModel.createNews({ title, content, authorName, authorId: userId, category });
         res.status(201).json({
             message: 'News created successfully',
             data: news
         });
-    } catch (error) {
-        next(error);
-    }
-};
 
-exports.updateNews = async (req, res) => {
-    try {
-        const { id } = req.params;
-        const { title, content } = req.body;
-        const updatedNews = await NewsModel.updateNews(id, { title, content });
-        res.status(200).json({
-            message: 'News updated successfully',
-            data: updatedNews
+        // Update post count for the journalist
+        const postCount = await Journalist.getPostCount(userId);
+        await db.collection('journalist').doc(userId).update({
+            postCount: postCount
         });
     } catch (error) {
-        if (error.message === 'News not found') {
-            return res.status(404).json({ message: error.message });
+        if (error.message === 'Title already exists') {
+            return res.status(400).json({ message: error.message });
         }
         next(error);
     }
 };
 
-exports.deleteNews = async (req, res) => {
+exports.updateNews = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const { title, content, category } = req.body;
+
+        const slug = slugify(title, { lower: true });
+
+        const updatedNews = await NewsModel.updateNews(id, { title, content, category });
+        res.status(200).json({
+            message: 'News updated successfully',
+            data: updatedNews
+        });
+
+        // Update post count for the journalist
+        const userId = req.user.uid;
+        const postCount = await Journalist.getPostCount(userId);
+        await db.collection('journalist').doc(userId).update({
+            postCount: postCount
+        });
+    } catch (error) {
+        if (error.message === 'News not found' || error.message === 'Title already exists') {
+            return res.status(400).json({ message: error.message });
+        }
+        next(error);
+    }
+};
+
+exports.deleteNews = async (req, res, next) => {
     try {
         const { id } = req.params;
         const deletedNews = await NewsModel.deleteNews(id);
         res.status(200).json({
             message: 'News deleted successfully',
             data: deletedNews
+        });
+
+        // Update post count for the journalist
+        const userId = req.user.uid;
+        const postCount = await Journalist.getPostCount(userId);
+        await db.collection('journalist').doc(userId).update({
+            postCount: postCount
         });
     } catch (error) {
         if (error.message === 'News not found') {
