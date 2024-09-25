@@ -31,6 +31,7 @@
     "jspdf": "^2.5.1",
     "jspdf-autotable": "^3.8.2",
     "prop-types": "^15.8.1",
+    "quill": "^2.0.2",
     "react": "^18.2.0",
     "react-data-table-component": "^7.6.2",
     "react-datepicker": "^6.9.0",
