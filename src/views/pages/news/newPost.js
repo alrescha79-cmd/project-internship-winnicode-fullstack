@@ -1,91 +1,66 @@
-import React, { useState, useEffect } from 'react'
-import { CForm, CFormInput, CFormSelect, CAlert, CButton } from '@coreui/react'
-import Quill from 'quill'
-import 'quill/dist/quill.snow.css'
-import CategoryModal from '../../../components/CategoryModal'
+import React, { useEffect, useState } from 'react'
+import { CForm, CAlert, CButton } from '@coreui/react'
+import TitleInput from '../../../components/TitleInput'
+import ThumbnailInput from '../../../components/ThumbnailInput'
+import CategorySelect from '../../../components/CategorySelect'
+import ContentEditor from '../../../components/ContentEditor'
+import useFirebaseAuthToken from '../../../hook/useFirebaseAuthToken'
+import { fetchData, postData } from '../../../api'
 
 const NewPost = () => {
   const [content, setContent] = useState('')
   const [title, setTitle] = useState('')
+  const [image, setImage] = useState('')
   const [category, setCategory] = useState('')
-  const [newCategory, setNewCategory] = useState('')
-  const [isAddingCategory, setIsAddingCategory] = useState(false)
+  const [categories, setCategories] = useState([])
   const [error, setError] = useState('')
-  const [modalVisible, setModalVisible] = useState(false)
-  const [categories, setCategories] = useState([
-    { label: 'Silakan pilih kategori berita', value: '' },
-    { label: 'Olahraga', value: 'olahraga' },
-    { label: 'Politik', value: 'politik' },
-    { label: 'Gaya Hidup', value: 'gaya hidup' },
-    { label: 'Tambah Kategori', value: 'tambah_kategori' },
-  ])
+  const token = useFirebaseAuthToken()
 
   useEffect(() => {
-    const quill = new Quill('#editor', {
-      theme: 'snow',
-      placeholder: 'Silakan isi berita yang ingin diposting',
-      modules: {
-        toolbar: [
-          [{ 'header': '1' }, { 'header': '2' }, { 'font': [] }],
-          [{ size: [] }],
-          ['bold', 'italic', 'underline', 'strike', 'blockquote'],
-          [{ 'list': 'ordered' }, { 'list': 'bullet' },
-          { 'indent': '-1' }, { 'indent': '+1' }],
-          ['link', 'image', 'video'],
-          ['clean']
-        ],
-      },
-    })
+    const getCategories = async () => {
+      if (token) {
+        try {
+          const response = await fetchData('http://localhost:3000/news', token)
+          const categories = response.data.reduce((acc, news) => {
+            if (!acc.includes(news.category)) {
+              acc.push(news.category)
+            }
+            return acc
+          }, ['Pilih Kategori'])
+          setCategories(categories.map(cat => ({ label: cat, value: cat })))
+        } catch (error) {
+          console.error('Error fetching data:', error)
+        }
+      }
+    }
 
-    quill.on('text-change', () => {
-      setContent(quill.root.innerHTML)
-    })
-  }, [])
+    getCategories()
+  }, [token])
+
 
   const handleTitleChange = (event) => {
     setTitle(event.target.value)
   }
 
-  const handleCategoryChange = (event) => {
-    const value = event.target.value
-    if (value === 'tambah_kategori') {
-      setIsAddingCategory(true)
-      setModalVisible(true)
-      setCategory('')
-    } else {
-      setIsAddingCategory(false)
-      setCategory(value)
-    }
+  const handleImageChange = (event) => {
+    setImage(event.target.files[0])
   }
 
-  const handleNewCategoryChange = (event) => {
-    setNewCategory(event.target.value)
+  const handleCategoryChange = (event) => {
+    setCategory(event.target.value)
   }
 
   const handleSubmit = () => {
-    const finalCategory = isAddingCategory ? newCategory : category
-
-    if (!title || !content || !finalCategory) {
+    if (!title || !content) {
       setError('Semua field harus diisi.')
       return
     }
 
-    setError('')
+    setError('Terjadi kesalahan. Silakan coba lagi.')
     console.log('Judul Berita:', title)
+    console.log('Thumbnail Berita:', image)
+    console.log('Kategori Berita:', category)
     console.log('Posting Berita:', content)
-    console.log('Kategori Berita:', finalCategory)
-  }
-
-  const handleModalSubmit = () => {
-    if (!newCategory) {
-      setError('Kategori baru harus diisi.')
-      return
-    }
-    setCategories([...categories.filter(cat => cat.value !== 'tambah_kategori'), { label: newCategory, value: newCategory }, { label: 'Tambah Kategori', value: 'tambah_kategori' }])
-    setCategory(newCategory)
-    setIsAddingCategory(false)
-    setModalVisible(false)
-    setError('')
   }
 
   return (
@@ -94,30 +69,17 @@ const NewPost = () => {
         <h1 className="text-center mb-4">Posting Berita</h1>
         <div className="flex gap-2">
           <CForm>
-            <CFormInput
-              type="text"
-              id="exampleFormControlInput1"
-              label="Judul Berita"
-              placeholder="Judul Berita"
-              aria-describedby="exampleFormControlInputHelpInline"
-              onChange={handleTitleChange}
-            />
+            <TitleInput title={title} handleTitleChange={handleTitleChange} />
           </CForm>
           <div className="mt-4">
-            <CFormInput type="file" size="lg" id="formFileLg" label="Thumbnail Berita" />
+            <ThumbnailInput handleImageChange={handleImageChange} />
           </div>
           <div className="mt-4">
-            <CFormSelect
-              aria-label="Kategori Berita"
-              value={category}
-              options={categories}
-              onChange={handleCategoryChange}
-            />
+            <CategorySelect category={category} categories={categories} handleCategoryChange={handleCategoryChange} />
           </div>
           <div className="mt-4">
             <CForm>
-              <label htmlFor="editor">Isi Berita</label>
-              <div id="editor" style={{ height: '200px' }}></div>
+              <ContentEditor content={content} setContent={setContent} />
             </CForm>
           </div>
           {error && (
@@ -126,18 +88,10 @@ const NewPost = () => {
             </CAlert>
           )}
           <div>
-            <button className="btn btn-primary mt-4" onClick={handleSubmit}>Post Berita</button>
+            <CButton color="primary" className="mt-4" onClick={handleSubmit}>Post Berita</CButton>
           </div>
         </div>
       </div>
-
-      <CategoryModal
-        visible={modalVisible}
-        onClose={() => setModalVisible(false)}
-        onSubmit={handleModalSubmit}
-        onChange={handleNewCategoryChange}
-        error={error}
-      />
     </>
   )
 }
