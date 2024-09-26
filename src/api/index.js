@@ -20,13 +20,21 @@ export const postData = async (url, data, token) => {
         const response = await axios.post(url, data, {
             headers: {
                 Authorization: `Bearer ${token}`,
-                'Content-Type': 'application/json',
+                'Content-Type': 'multipart/form-data',
             },
         })
-        console.log('API Response:', response)
         return response.data
     } catch (error) {
         console.error(error)
         throw error
     }
+}
+
+export const deleteData = async (url, token) => {
+    const response = await axios.delete(url, {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    })
+    return response.data
 }

@@ -14,13 +14,15 @@ const NewPost = () => {
   const [category, setCategory] = useState('')
   const [categories, setCategories] = useState([])
   const [error, setError] = useState('')
-  const token = useFirebaseAuthToken()
+  const [success, setSuccess] = useState('')
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const user = useFirebaseAuthToken()
 
   useEffect(() => {
     const getCategories = async () => {
-      if (token) {
+      if (user) {
         try {
-          const response = await fetchData('http://localhost:3000/news', token)
+          const response = await fetchData('http://localhost:3000/news', user)
           const categories = response.data.reduce((acc, news) => {
             if (!acc.includes(news.category)) {
               acc.push(news.category)
@@ -35,8 +37,7 @@ const NewPost = () => {
     }
 
     getCategories()
-  }, [token])
-
+  }, [user])
 
   const handleTitleChange = (event) => {
     setTitle(event.target.value)
@@ -50,17 +51,40 @@ const NewPost = () => {
     setCategory(event.target.value)
   }
 
-  const handleSubmit = () => {
-    if (!title || !content) {
+  const handleSubmit = async () => {
+    if (!title || !image || !category || !content) {
       setError('Semua field harus diisi.')
+      setTimeout(() => setError(''), 3000)
       return
     }
 
-    setError('Terjadi kesalahan. Silakan coba lagi.')
-    console.log('Judul Berita:', title)
-    console.log('Thumbnail Berita:', image)
-    console.log('Kategori Berita:', category)
-    console.log('Posting Berita:', content)
+    setIsSubmitting(true)
+    setError('')
+    setSuccess('')
+
+    try {
+      const formData = new FormData()
+      formData.append('title', title)
+      formData.append('thumbnail', image)
+      formData.append('category', category)
+      formData.append('content', content)
+
+      const response = await postData('http://localhost:3000/news', formData, user.token)
+
+      setTitle('')
+      setImage('')
+      setCategory('')
+      setContent('')
+      setSuccess('Berita berhasil diposting!')
+      setTimeout(() => setSuccess(''), 3000)
+
+    } catch (error) {
+      console.error('Error posting news:', error)
+      setError('Gagal memposting berita.')
+      setTimeout(() => setError(''), 3000)
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   return (
@@ -87,8 +111,20 @@ const NewPost = () => {
               {error}
             </CAlert>
           )}
+          {success && (
+            <CAlert color="success" className="mt-4">
+              {success}
+            </CAlert>
+          )}
           <div>
-            <CButton color="primary" className="mt-4" onClick={handleSubmit}>Post Berita</CButton>
+            <CButton
+              color="primary"
+              className="mt-4"
+              onClick={handleSubmit}
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? 'Memposting...' : 'Post Berita'}
+            </CButton>
           </div>
         </div>
       </div>

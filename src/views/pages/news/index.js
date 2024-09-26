@@ -1,21 +1,20 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import useFirebaseAuthToken from '../../../hook/useFirebaseAuthToken'
-import { fetchData } from '../../../api'
+import { fetchData, deleteData } from '../../../api'
 import { CButton, CTable, CTableBody, CTableDataCell, CTableHead, CTableHeaderCell, CTableRow } from '@coreui/react'
 
 const News = () => {
   const [data, setData] = useState(null)
-  const token = useFirebaseAuthToken()
+  const user = useFirebaseAuthToken()
   const navigate = useNavigate()
 
   useEffect(() => {
     const getData = async () => {
-      if (token) {
+      if (user) {
         try {
-          const response = await fetchData('http://localhost:3000/news', token)
+          const response = await fetchData('http://localhost:3000/news', user)
           setData(response.data)
-          // console.log(response.data)
         } catch (error) {
           console.error('Error fetching data:', error)
         }
@@ -23,16 +22,24 @@ const News = () => {
     }
 
     getData()
-  }, [token])
+  }, [user])
 
   const handleEdit = (id) => {
     navigate(`/news/edit/${id}`)
-    // alert(`Edit news with id: ${id}`)
   }
 
-  const handleDelete = (id) => {
-    alert(`Delete news with id: ${id}`)
-
+  const handleDelete = async (id) => {
+    if (user && user.token) {
+      if (window.confirm('Apakah Anda yakin ingin menghapus berita ini?')) {
+        try {
+          await deleteData(`http://localhost:3000/news/${id}`, user.token)
+          const updatedData = data.filter(news => news.id !== id)
+          setData(updatedData)
+        } catch (error) {
+          console.error('Error deleting news:', error)
+        }
+      }
+    }
   }
 
   return (
@@ -69,6 +76,7 @@ function getAllNews(news, handleEdit, handleDelete) {
               <CTableDataCell>{formatDate(newsItem.createdAt)}</CTableDataCell>
               <CTableDataCell>{formatTime(newsItem.createdAt)}</CTableDataCell>
               <CTableDataCell>
+                <CButton color="info" className='me-2' onClick={() => navigate(`/news/${newsItem.id}`)}>Lihat</CButton>
                 <CButton color="primary" className='me-2' onClick={() => handleEdit(newsItem.id)}>Edit</CButton>
                 <CButton color="danger" onClick={() => handleDelete(newsItem.id)}>Hapus</CButton>
               </CTableDataCell>
@@ -76,7 +84,7 @@ function getAllNews(news, handleEdit, handleDelete) {
           ))
         ) : (
           <CTableRow>
-            <CTableDataCell colSpan="5" className="text-center">Loading...</CTableDataCell>
+            <CTableDataCell colSpan="7" className="text-center">Loading...</CTableDataCell>
           </CTableRow>
         )}
       </CTableBody>
