@@ -24,8 +24,12 @@ const News = () => {
     getData()
   }, [user])
 
-  const handleEdit = (id) => {
-    navigate(`/news/edit/${id}`)
+  const handleEdit = (slug) => {
+    navigate(`/news/edit/${slug}`)
+  }
+
+  const handleView = (slug) => {
+    navigate(`/news/${slug}`)
   }
 
   const handleDelete = async (id) => {
@@ -44,14 +48,14 @@ const News = () => {
 
   return (
     <div>
-      {getAllNews(data, handleEdit, handleDelete)}
+      {getAllNews(data, handleEdit, handleDelete, handleView)}
     </div>
   )
 }
 
 export default News
 
-function getAllNews(news, handleEdit, handleDelete) {
+function getAllNews(news, handleEdit, handleDelete, handleView) {
   return (
     <CTable className='mt-4' striped>
       <CTableHead>
@@ -76,8 +80,8 @@ function getAllNews(news, handleEdit, handleDelete) {
               <CTableDataCell>{formatDate(newsItem.createdAt)}</CTableDataCell>
               <CTableDataCell>{formatTime(newsItem.createdAt)}</CTableDataCell>
               <CTableDataCell>
-                <CButton color="info" className='me-2' onClick={() => navigate(`/news/${newsItem.id}`)}>Lihat</CButton>
-                <CButton color="primary" className='me-2' onClick={() => handleEdit(newsItem.id)}>Edit</CButton>
+                <CButton color="info" className='me-2' onClick={() => handleView(newsItem.slug)}>Lihat</CButton>
+                <CButton color="primary" className='me-2' onClick={() => handleEdit(newsItem.slug)}>Edit</CButton>
                 <CButton color="danger" onClick={() => handleDelete(newsItem.id)}>Hapus</CButton>
               </CTableDataCell>
             </CTableRow>
