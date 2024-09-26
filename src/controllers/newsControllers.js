@@ -18,14 +18,14 @@ exports.getAllNews = async (req, res, next) => {
     }
 };
 
-exports.getNewsById = async (req, res, next) => {
+exports.getNewsBySlug = async (req, res, next) => {
     try {
-        const newsId = req.params.id || req.query.id;
-        if (!newsId) {
-            return res.status(400).json({ message: 'News ID is required' });
+        const slug = req.params.slug || req.query.slug;
+        if (!slug) {
+            return res.status(400).json({ message: 'News slug is required' });
         }
 
-        const news = await NewsModel.getNewsById(newsId);
+        const news = await NewsModel.getNewsBySlug(slug);
         res.status(200).json({
             message: 'News retrieved successfully',
             data: news

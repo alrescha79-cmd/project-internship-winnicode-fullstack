@@ -1,6 +1,7 @@
-const { db, admin, storage } = require('../config/Firebase');
+const { db, admin } = require('../config/Firebase');
 const slugify = require('slugify');
 const { v4: uuidv4 } = require('uuid');
+const { ref, uploadBytes, getDownloadURL } = require('firebase-admin/storage');
 
 const NewsModel = {
     async getAllNews() {
@@ -20,6 +21,18 @@ const NewsModel = {
         if (!doc.exists) {
             throw new Error('News not found');
         }
+        return {
+            id: doc.id,
+            ...doc.data()
+        };
+    },
+
+    async getNewsBySlug(slug) {
+        const snapshot = await db.collection('news').where('slug', '==', slug).get();
+        if (snapshot.empty) {
+            throw new Error('News not found');
+        }
+        const doc = snapshot.docs[0];
         return {
             id: doc.id,
             ...doc.data()
@@ -77,20 +90,19 @@ const NewsModel = {
         };
     },
 
-    async updateNews(newsId, { title, content, category, thumbnail }) {
-        const newsRef = db.collection('news').doc(newsId);
-        const doc = await newsRef.get();
-        if (!doc.exists) {
+    async updateNewsBySlug(slug, { title, content, category, thumbnail, newSlug }) {
+        const snapshot = await db.collection('news').where('slug', '==', slug).get();
+        if (snapshot.empty) {
             throw new Error('News not found');
         }
+        const doc = snapshot.docs[0];
+        const newsRef = db.collection('news').doc(doc.id);
 
         // Check if title already exists (excluding the current news)
         const existingNews = await db.collection('news').where('title', '==', title).get();
-        if (!existingNews.empty && existingNews.docs[0].id !== newsId) {
+        if (!existingNews.empty && existingNews.docs[0].id !== doc.id) {
             throw new Error('Title already exists');
         }
-
-        const slug = slugify(title, { lower: true });
 
         let thumbnailURL = doc.data().thumbnailURL;
         if (thumbnail) {
@@ -111,12 +123,12 @@ const NewsModel = {
         await newsRef.update({
             title,
             content,
-            slug,
+            slug: newSlug,
             category,
             thumbnailURL,
             lastEdit: admin.firestore.FieldValue.serverTimestamp()
         });
-        return { id: newsId, title, content, slug, category, thumbnailURL };
+        return { id: doc.id, title, content, slug: newSlug, category, thumbnailURL };
     },
 
     async deleteNews(newsId) {

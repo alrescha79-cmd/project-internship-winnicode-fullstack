@@ -10,9 +10,9 @@ const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
 router.get('/', newsController.getAllNews);
-router.get('/:id', newsController.getNewsById);
+router.get('/:slug', newsController.getNewsBySlug);
 router.post('/', authMiddleware, upload.single('thumbnail'), newsController.createNews);
-router.put('/:id', authMiddleware, upload.single('thumbnail'), newsController.updateNews);
+router.put('/:slug', authMiddleware, upload.single('thumbnail'), newsController.updateNews);
 router.delete('/:id', authMiddleware, newsController.deleteNews);
 
 module.exports = router;
