@@ -38,6 +38,23 @@ exports.getNewsBySlug = async (req, res, next) => {
     }
 };
 
+// exports.getNewsById = async (req, res, next) => {
+//     try {
+//         const { id } = req.params;
+//         const news = await NewsModel.getNewsById(id);
+//         res.status(200).json({
+//             message: 'News retrieved successfully',
+//             data: news
+//         });
+//     } catch (error) {
+//         if (error.message === 'News not found') {
+//             return res.status(404).json({ message: error.message });
+//         }
+//         next(error);
+//     }
+// };
+
+
 exports.createNews = async (req, res, next) => {
     try {
         const { title, content, category } = req.body;
@@ -50,7 +67,7 @@ exports.createNews = async (req, res, next) => {
         }
         const authorName = userDoc.data().name;
 
-        const slug = slugify(title, { lower: true });
+     const    slug = slugify(title, { lower: true });
 
         const news = await NewsModel.createNews({ title, content, authorName, authorId: userId, category, thumbnail });
         res.status(201).json({
@@ -58,7 +75,6 @@ exports.createNews = async (req, res, next) => {
             data: news
         });
 
-        // Update post count for the journalist
         const postCount = await Journalist.getPostCount(userId);
         await db.collection('journalist').doc(userId).update({
             postCount: postCount
