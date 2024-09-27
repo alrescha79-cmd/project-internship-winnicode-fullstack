@@ -1,0 +1,40 @@
+.detail-container {
+  padding: 20px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.back-button {
+  margin-bottom: 20px;
+}
+
+.news-detail {
+  text-align: center;
+}
+
+.news-title {
+  font-size: 2em;
+  margin-bottom: 10px;
+}
+
+.news-meta {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.news-date,
+.news-author {
+  font-size: 0.9em;
+  color: #555;
+}
+
+.news-thumbnail {
+  width: 100%;
+  max-height: 400px;
+  margin-bottom: 20px;
+}
+
+.news-content {
+  text-align: left;
+}

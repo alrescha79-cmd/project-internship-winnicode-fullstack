@@ -70,6 +70,7 @@ const NewPost = () => {
       formData.append('content', content)
 
       const response = await postData('http://localhost:3000/news', formData, user.token)
+      console.log('Response:', response)
 
       setTitle('')
       setImage('')
