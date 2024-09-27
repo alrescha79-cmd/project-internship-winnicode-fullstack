@@ -1,7 +1,6 @@
-const { db, admin } = require('../config/Firebase');
 const slugify = require('slugify');
+const { db, admin, storage } = require('../config/Firebase');
 const { v4: uuidv4 } = require('uuid');
-const { ref, uploadBytes, getDownloadURL } = require('firebase-admin/storage');
 
 const NewsModel = {
     async getAllNews() {
