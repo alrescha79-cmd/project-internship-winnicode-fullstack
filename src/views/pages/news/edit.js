@@ -106,7 +106,6 @@ function EditPage() {
         }
     }
 
-
     return (
         <>
             <div>
@@ -126,7 +125,7 @@ function EditPage() {
                     </div>
                     <div className="mt-4">
                         <CForm>
-                            <ContentEditor content={content} setContent={setContent} /> 
+                            <ContentEditor value={content} onChange={setContent} />
                         </CForm>
                     </div>
                     {error && (

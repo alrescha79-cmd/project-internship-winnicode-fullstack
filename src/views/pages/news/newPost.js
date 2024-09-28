@@ -70,7 +70,7 @@ const NewPost = () => {
       formData.append('content', content)
 
       const response = await postData('http://localhost:3000/news', formData, user.token)
-      console.log('Response:', response)
+      // console.log('Response:', response)
 
       setTitle('')
       setImage('')
@@ -104,7 +104,7 @@ const NewPost = () => {
           </div>
           <div className="mt-4">
             <CForm>
-              <ContentEditor content={content} setContent={setContent} />
+              <ContentEditor value={content} onChange={setContent} />
             </CForm>
           </div>
           {error && (
