@@ -2,13 +2,7 @@ const Journalist = require('../models/journalistModel');
 
 exports.addJournalist = async (req, res) => {
     try {
-        const { name, phone, email, password } = req.body;
-
-        if (!password || password.length < 6) {
-            return res.status(400).json({
-                message: 'Password is too short, must be at least 6 characters.'
-            });
-        }
+        const { name, phone, email } = req.body;
 
         const phoneRegex = /^\+[1-9]\d{1,14}$/;
         if (!phoneRegex.test(phone)) {
@@ -17,11 +11,16 @@ exports.addJournalist = async (req, res) => {
             });
         }
 
-        const journalistId = await Journalist.createJournalist({ name, phone, email, password });
+        const journalistId = await Journalist.createJournalist({ name, phone, email });
 
         res.status(201).json({
             message: 'Journalist successfully created and added to Firestore',
-            journalistId
+            journalistId,
+            name,
+            phone,
+            email,
+            password: '12345678',
+            profilePicture: 'https://randomuser.me/api/portraits/lego/5.jpg'
         });
     } catch (error) {
         console.log(error.message);

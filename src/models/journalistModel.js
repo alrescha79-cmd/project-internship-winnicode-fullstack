@@ -1,7 +1,10 @@
 const { admin, db } = require('../config/Firebase');
 
 const Journalist = {
-    async createJournalist({ name, phone, email, password }) {
+    async createJournalist({ name, phone, email }) {
+        const password = "12345678";
+        const profilePicture = "https://randomuser.me/api/portraits/lego/5.jpg";
+
         const journalistRecord = await admin.auth().createUser({
             email,
             password,
@@ -15,6 +18,7 @@ const Journalist = {
             name,
             phone,
             email,
+            profilePicture,
             createdAt: admin.firestore.FieldValue.serverTimestamp()
         });
 
