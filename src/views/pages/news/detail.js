@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom'
 import useFirebaseAuthToken from '../../../hook/useFirebaseAuthToken'
 import { fetchData } from '../../../api'
 import '../../../css/news/detail.css'
+import { CImage } from '@coreui/react'
 
 const Detail = () => {
     const [data, setData] = useState(null)
@@ -37,15 +38,15 @@ const Detail = () => {
 
     return (
         <div className="detail-container">
-            <button className="back-button" onClick={() => window.history.back()}>Back</button>
+            <button className="mb-4 btn btn-secondary" onClick={() => window.history.back()}>Kembali</button>
             {data ? (
                 <div className="news-detail">
                     <h1 className="news-title">{data.title}</h1>
                     <div className="news-meta">
                         <small className="news-date">{formatDate(data.createdAt)}</small>
-                        <small className="news-author">{data.author}</small>
+                        <small className="news-author">Ditulis Oleh {data.author}</small>
                     </div>
-                    <img className="news-thumbnail" src={data.thumbnailURL} alt={data.title} />
+                    <CImage fluid className="news-thumbnail" src={data.thumbnailURL} alt={data.title} />
                     <hr />
                     <br />
                     <div className="news-content" dangerouslySetInnerHTML={{ __html: data.content }}></div>

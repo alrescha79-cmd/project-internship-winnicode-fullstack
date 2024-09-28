@@ -7,6 +7,7 @@ const NewsDetail = React.lazy(() => import('./views/pages/news/detail'))
 const EditPage = React.lazy(() => import('./views/pages/news/edit'))
 const NewPost = React.lazy(() => import('./views/pages/news/newPost'))
 const NewsCategory = React.lazy(() => import('./views/pages/news/newsCategory'))
+const CategoryDetail = React.lazy(() => import('./views/pages/news/categoryDetail'))
 const Author = React.lazy(() => import('./views/pages/author'))
 
 const routes = [
@@ -45,6 +46,11 @@ const routes = [
     path: '/news/category',
     name: 'Kategori Berita',
     element: NewsCategory,
+  },
+  {
+    path: '/news/category/:category',
+    name: 'Kategori Berita',
+    element: CategoryDetail,
   },
   {
     path: '/author',

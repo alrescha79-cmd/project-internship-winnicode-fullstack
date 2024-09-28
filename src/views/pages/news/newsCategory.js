@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import useFirebaseAuthToken from '../../../hook/useFirebaseAuthToken'
 import { fetchData } from '../../../api'
 import { CButton, CCard, CCardBody, CCardHeader, CCardText, CCardTitle, CCol, CRow } from '@coreui/react'
@@ -6,6 +7,7 @@ import { CButton, CCard, CCardBody, CCardHeader, CCardText, CCardTitle, CCol, CR
 const NewsCategory = () => {
   const [data, setData] = useState([])
   const token = useFirebaseAuthToken()
+  const navigate = useNavigate()
 
   useEffect(() => {
     const getData = async () => {
@@ -35,6 +37,10 @@ const NewsCategory = () => {
   // Konversi objek hasil pengelompokan menjadi array
   const uniqueData = Object.values(groupedData)
 
+  const handleViewNews = (category) => {
+    navigate(`/news/category/${category}`)
+  }
+
   return (
     <>
       <h1 className='text-center mt-2 mb-4'>Kategori Berita</h1>
@@ -46,7 +52,7 @@ const NewsCategory = () => {
               <CCardBody>
                 <CCardTitle>{category.newsCount} Berita</CCardTitle>
                 <CCardText>Berita tentang <b>{category.category}</b></CCardText>
-                <CButton color="primary" href="#">
+                <CButton color="primary" onClick={() => handleViewNews(category.category)}>
                   Lihat Berita
                 </CButton>
               </CCardBody>
