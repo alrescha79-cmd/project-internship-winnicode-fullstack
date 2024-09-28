@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import useFirebaseAuthToken from '../../../hook/useFirebaseAuthToken'
 import { fetchData } from '../../../api'
-import { CButton, CCard, CCardBody, CCardImage, CCardText, CCardTitle, CCol, CImage, CRow } from '@coreui/react'
+import { CButton, CCard, CCardBody, CCardText, CCardTitle, CCol, CImage, CRow } from '@coreui/react'
 
 function CategoryDetailPage() {
   const [data, setData] = useState([])

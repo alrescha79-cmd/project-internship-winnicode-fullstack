@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom'
 import useFirebaseAuthToken from '../../../hook/useFirebaseAuthToken'
 import { fetchData } from '../../../api'
 import '../../../css/news/detail.css'
-import { CImage } from '@coreui/react'
+import { CImage, CSpinner } from '@coreui/react'
 
 const Detail = () => {
     const [data, setData] = useState(null)
@@ -52,7 +52,9 @@ const Detail = () => {
                     <div className="news-content" dangerouslySetInnerHTML={{ __html: data.content }}></div>
                 </div>
             ) : (
-                <p>Loading...</p>
+                    <div className="text-center">
+                        <CSpinner />
+                    </div>
             )}
         </div>
     )

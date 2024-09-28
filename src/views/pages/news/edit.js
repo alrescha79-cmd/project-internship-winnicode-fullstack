@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import useFirebaseAuthToken from '../../../hook/useFirebaseAuthToken'
 import { fetchData, postData } from '../../../api'
-import { CAlert, CButton, CForm } from '@coreui/react'
+import { CAlert, CButton, CForm, CImage } from '@coreui/react'
 import ContentEditor from '../../../components/ContentEditor'
 import CategorySelect from '../../../components/CategorySelect'
 import ThumbnailInput from '../../../components/ThumbnailInput'
@@ -13,7 +13,7 @@ function EditPage() {
     const [title, setTitle] = useState('')
     const [image, setImage] = useState(null)
     const [category, setCategory] = useState('')
-    const [content, setContent] = useState('')
+    const [content, setContent] = useState('') // Inisialisasi content kosong
     const [categories, setCategories] = useState([])
     const [error, setError] = useState('')
     const [success, setSuccess] = useState('')
@@ -30,7 +30,7 @@ function EditPage() {
                     setData(newsData)
                     setTitle(newsData.title)
                     setCategory(newsData.category)
-                    setContent(newsData.content)
+                    setContent(newsData.content) // Set content untuk editor
                     setImage(newsData.thumbnailURL)
                 } catch (error) {
                     console.error('Error fetching data:', error)
@@ -93,7 +93,6 @@ function EditPage() {
             formData.append('content', content)
 
             const response = await postData(`http://localhost:3000/news/${slug}`, formData, user.token)
-            console.log('Edit News Response:', response)
 
             setSuccess('Berita berhasil diperbarui!')
             setTimeout(() => setSuccess(''), 3000)
@@ -107,6 +106,7 @@ function EditPage() {
         }
     }
 
+
     return (
         <>
             <div>
@@ -115,6 +115,9 @@ function EditPage() {
                     <CForm>
                         <TitleInput title={title} handleTitleChange={handleTitleChange} />
                     </CForm>
+                    {image && (
+                        <CImage src={typeof image === 'string' ? image : URL.createObjectURL(image)} fluid thumbnail width={'400px'} />
+                    )}
                     <div className="mt-4">
                         <ThumbnailInput handleImageChange={handleImageChange} />
                     </div>
@@ -123,7 +126,7 @@ function EditPage() {
                     </div>
                     <div className="mt-4">
                         <CForm>
-                            <ContentEditor content={content} setContent={setContent} />
+                            <ContentEditor content={content} setContent={setContent} /> 
                         </CForm>
                     </div>
                     {error && (

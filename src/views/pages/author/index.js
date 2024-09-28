@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import useFirebaseAuthToken from '../../../hook/useFirebaseAuthToken'
 import { fetchData } from '../../../api'
-import { CCard, CCardImage, CCardBody, CCardTitle, CCardText, CButton, CRow, CCol, CForm, CFormInput, CTable, CTableHead, CTableRow, CTableHeaderCell, CTableBody, CTableDataCell } from '@coreui/react'
+import { CCard, CCardImage, CCardBody, CCardTitle, CCardText, CButton, CRow, CCol, CForm, CFormInput, CTable, CTableHead, CTableRow, CTableHeaderCell, CTableBody, CTableDataCell, CSpinner } from '@coreui/react'
 import ReactImg from '../../../assets/images/avatars/7.jpg'
 
 const Author = () => {
@@ -111,7 +111,7 @@ function listAuthors(authors) {
         ))
       ) : (
         <CTableRow>
-          <CTableDataCell colSpan="4" className="text-center">Loading...</CTableDataCell>
+          <CTableDataCell colSpan="4" className="text-center"><CSpinner /></CTableDataCell>
         </CTableRow>
       )}
     </CTableBody>

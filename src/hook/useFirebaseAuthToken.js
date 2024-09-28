@@ -11,7 +11,7 @@ const useFirebaseAuthToken = () => {
 
             if (currentUser) {
                 const token = await currentUser.getIdToken()
-                setUser({ token, uid: currentUser.uid, email: currentUser.email }) // Mengembalikan objek pengguna yang login
+                setUser({ token, uid: currentUser.uid, email: currentUser.email }) 
             }
         }
 
