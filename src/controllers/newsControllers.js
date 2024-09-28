@@ -55,6 +55,29 @@ exports.getNewsBySlug = async (req, res, next) => {
 // };
 
 
+exports.getNewsByCategory = async (req, res, next) => {
+    try {
+        const category = req.params.category;
+        if (!category) {
+            return res.status(400).json({ message: 'News category is required' });
+        }
+
+        const newsList = await NewsModel.getNewsByCategory(category);
+
+        if (newsList.length === 0) {
+            return res.status(404).json({ message: 'No news found' });
+        }
+
+        res.status(200).json({
+            message: 'News retrieved successfully',
+            data: newsList
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+
 exports.createNews = async (req, res, next) => {
     try {
         const { title, content, category } = req.body;
@@ -67,7 +90,7 @@ exports.createNews = async (req, res, next) => {
         }
         const authorName = userDoc.data().name;
 
-     const    slug = slugify(title, { lower: true });
+        const slug = slugify(title, { lower: true });
 
         const news = await NewsModel.createNews({ title, content, authorName, authorId: userId, category, thumbnail });
         res.status(201).json({

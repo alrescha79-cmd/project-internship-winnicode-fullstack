@@ -38,6 +38,19 @@ const NewsModel = {
         };
     },
 
+    async getNewsByCategory(category) {
+        const snapshot = await db.collection('news').where('category', '==', category).get();
+        const newsList = [];
+        snapshot.forEach(doc => {
+            newsList.push({
+                id: doc.id,
+                ...doc.data()
+            });
+        });
+        return newsList;
+    },
+
+
     async createNews({ title, content, authorName, authorId, category, thumbnail }) {
         // Check if title already exists
         const existingNews = await db.collection('news').where('title', '==', title).get();
