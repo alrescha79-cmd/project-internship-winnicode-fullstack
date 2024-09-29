@@ -12,14 +12,26 @@ const Detail = () => {
 
     const formatDate = (timestamp) => {
         if (timestamp && typeof timestamp._seconds === 'number' && typeof timestamp._nanoseconds === 'number') {
-            const date = new Date(timestamp._seconds * 1000 + timestamp._nanoseconds / 1000000)
-            const day = date.getDate().toString().padStart(2, '0')
-            const month = (date.getMonth() + 1).toString().padStart(2, '0')
-            const year = date.getFullYear()
-            return `${day}-${month}-${year}`
+            const date = new Date(timestamp._seconds * 1000 + timestamp._nanoseconds / 1000000);
+            const dateOptions = { 
+                day: '2-digit', 
+                month: 'long', 
+                year: 'numeric', 
+                timeZone: 'Asia/Jakarta' 
+            };
+            const timeOptions = { 
+                hour: '2-digit', 
+                minute: '2-digit', 
+                timeZone: 'Asia/Jakarta',
+                hourCycle: 'h23',
+                hour12: false
+            };
+            const formattedDate = date.toLocaleDateString('id-ID', dateOptions);
+            const formattedTime = date.toLocaleTimeString('id-ID', timeOptions).replace('.', ':');
+            return `${formattedDate} ${formattedTime} WIB`;
         }
-        return 'Invalid Date'
-    }
+        return 'Invalid Date';
+    };
 
     useEffect(() => {
         const getData = async () => {
@@ -44,7 +56,7 @@ const Detail = () => {
                     <h1 className="news-title">{data.title}</h1>
                     <div className="news-meta">
                         <small className="news-date">{formatDate(data.createdAt)}</small>
-                        <small className="news-author">Ditulis Oleh {data.author}</small>
+                        <small className="news-author">Ditulis Oleh <strong>{data.author}</strong></small>
                     </div>
                     <CImage fluid className="news-thumbnail" src={data.thumbnailURL} alt={data.title} />
                     <hr />
@@ -52,9 +64,9 @@ const Detail = () => {
                     <div className="news-content" dangerouslySetInnerHTML={{ __html: data.content }}></div>
                 </div>
             ) : (
-                    <div className="text-center">
-                        <CSpinner />
-                    </div>
+                <div className="text-center">
+                    <CSpinner />
+                </div>
             )}
         </div>
     )
