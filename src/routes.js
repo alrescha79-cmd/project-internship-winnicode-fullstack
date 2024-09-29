@@ -9,6 +9,8 @@ const NewPost = React.lazy(() => import('./views/pages/news/newPost'))
 const NewsCategory = React.lazy(() => import('./views/pages/news/newsCategory'))
 const CategoryDetail = React.lazy(() => import('./views/pages/news/categoryDetail'))
 const Author = React.lazy(() => import('./views/pages/author'))
+const EditAuthorPage = React.lazy(() => import('./views/pages/author/editAuthor'))
+const DetailAuthorPage = React.lazy(() => import('./views/pages/author/detailAuthor'))
 
 const routes = [
   {
@@ -56,6 +58,16 @@ const routes = [
     path: '/author',
     name: 'Penulis',
     element: Author,
+  },
+  {
+    path: '/author/edit/:id',
+    name: 'Edit Penulis',
+    element: EditAuthorPage,
+  },
+  {
+    path: '/author/detail/:id',
+    name: 'Detail Penulis',
+    element: DetailAuthorPage,
   },
 ]
 
