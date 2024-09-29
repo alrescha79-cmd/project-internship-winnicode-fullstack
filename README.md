@@ -44,9 +44,41 @@ Jalankan backend
 ```bash
   npm run dev
 ```
+buka terminal baru
 
 Kembali ke folder utama
 
+```bash
+  cd ..
+```
+
+Install dashboard menggunakan npm
+
+```bash
+  git clone -b dashboard https://github.com/alrescha79-cmd/project-internship-winnicode-fullstack.git dashboard
+```
+
+Arahkan ke folder dahsboard
+
+```bash
+  cd dashboard
+```
+
+Install semua dependensi
+
+```bash
+  npm i
+```
+
+Jalankan dashboard
+
+```bash
+  npm start
+```
+
+buka terminal baru
+
+kembali ke folder utama
 ```bash
   cd ..
 ```
