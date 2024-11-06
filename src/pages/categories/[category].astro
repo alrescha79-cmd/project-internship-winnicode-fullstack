@@ -1,0 +1,102 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+import BlogCard from "@components/blog/BlogCard.astro";
+import MainSection from "@components/ui/sections/MainSection.astro";
+import { SITE } from "@/config";
+
+// Fungsi untuk mengambil data kategori dari API utama
+async function fetchNewsData() {
+    const response = await fetch("http://localhost:3000/news");
+    const data = await response.json();
+    return data.data;
+}
+
+// Fungsi untuk mengambil berita berdasarkan kategori dari API
+async function fetchNewsByCategory(categorySlug: string | number | boolean) {
+    try {
+        const response = await fetch(`http://localhost:3000/news/category/${encodeURIComponent(categorySlug)}`);
+        const data = await response.json();
+        return data.data || [];
+    }
+    catch (error) {
+        console.error("Error fetching data:", error);
+        return [];
+    }
+}
+
+// Menambahkan getStaticPaths untuk menentukan kategori yang tersedia
+export async function getStaticPaths() {
+    // Mendapatkan daftar kategori dari data API utama
+    const data = await fetchNewsData();
+    const categories = [...new Set(data.map((item: { category: any }) => item.category))]; // Mengambil kategori unik
+
+    return categories.map(category => ({
+        params: { category },
+    }));
+}
+
+// Mendapatkan parameter kategori dari URL
+const { category } = Astro.props;
+console.log("Category parameter:", category); // Debugging untuk memastikan parameter
+
+// Mengambil berita untuk kategori tertentu
+const posts = await fetchNewsByCategory(category);
+console.log("Posts for category:", posts); // Debugging untuk memastikan data
+
+// Konfigurasi SEO dan URL
+const URL = Astro.url.href;
+const categoriesURL = `${Astro.url.origin}/categories`;
+---
+
+<BaseLayout
+    title={`News in ${category || "Unknown Category"}`}
+    description={`All news in ${category || "Unknown Category"}`}
+    structuredData={{
+        "@context": "https://schema.org",
+        "@type": "WebPage",
+        "inLanguage": "en-US",
+        "@id": URL,
+        "url": URL,
+        "name": `${category} - ${SITE.title}`,
+        "description": `All news in ${category}`,
+        "isPartOf": {
+            "@type": "WebSite",
+            "url": categoriesURL,
+            "name": `All Categories - ${SITE.title}`,
+        },
+    }}
+>
+    <MainSection
+        title={`Category: ${category || "Unknown Category"}`}
+        subTitle={`All news in ${category || "Unknown Category"}`}
+        btnExists={true}
+        btnTitle="Go to Categories"
+        btnURL="/categories"
+    />
+
+    <section
+        class="mx-auto max-w-[85rem] px-4 py-8 sm:px-6 lg:px-8 mb-10 2xl:max-w-full"
+    >
+        <div class="grid gap-6 grid-cols-1 lg:grid-cols-3 sm:grid-cols-2">
+            {
+                posts.length > 0
+                ? (
+                    posts.map((post: { title: any; content: any; slug: any; thumbnailURL: any; createdAt: { _seconds: number } }) => (
+                        <BlogCard
+                            blog={{
+                                title: post.title,
+                                description: post.content,
+                                slug: post.slug,
+                                thumbnailURL: post.thumbnailURL,
+                                pubDate: new Date(post.createdAt._seconds * 1000).toLocaleDateString(),
+                            }}
+                        />
+                    ))
+                )
+                : (
+                    <p>No posts available in this category.</p>
+                )
+            }
+        </div>
+    </section>
+</BaseLayout>

@@ -39,7 +39,7 @@ export default defineConfig({
         enabled: false,
     },
     prefetch: true,
-    output: "static",
+    output: "server",
     build: {
     // Specifies the directory in the build output where Astro-generated assets (bundled JS and CSS for example) should live.
     // see https://docs.astro.build/en/reference/configuration-reference/#buildassets

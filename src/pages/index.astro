@@ -1,21 +1,14 @@
 ---
-import { getCollection } from "astro:content";
-import type { CollectionEntry } from "astro:content";
 import BaseLayout from "@layouts/BaseLayout.astro";
 import BlogRecentCard from "@components/blog/BlogRecentCard.astro";
-import BlogSelectedArticle from "@components/blog/BlogSelectedArticle.astro";
 import MainSection from "@components/ui/sections/MainSection.astro";
 import { SITE } from "@/config";
 
-const posts: CollectionEntry<"posts">[] = (await getCollection("posts")).sort(
-    (a: CollectionEntry<"posts">, b: CollectionEntry<"posts">) =>
-        b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
-);
+const response = await fetch("http://localhost:3000/news");
+const result = await response.json();
+const posts = result.data || []; // Ambil data dari API
 
-const selectedPosts: CollectionEntry<"posts">[] = posts.filter(
-    p => p.data.selected,
-);
-const description = "Berita Terbaru ";
+const description = "Berita Terbaru";
 const URL = Astro.url.href;
 ---
 
@@ -47,5 +40,4 @@ const URL = Astro.url.href;
     />
 
     <BlogRecentCard blogs={posts} />
-    <BlogSelectedArticle posts={selectedPosts} />
 </BaseLayout>
