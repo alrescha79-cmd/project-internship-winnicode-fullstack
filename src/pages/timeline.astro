@@ -3,7 +3,7 @@ import BaseLayout from "@layouts/BaseLayout.astro";
 import BlogTimeline from "@components/blog/BlogTimeline.astro";
 import { SITE } from "@/config";
 
-const response = await fetch("http://localhost:3000/news");
+const response = await fetch(`${import.meta.env.HOST}/news`);
 const result = await response.json();
 const posts = result.data || [];
 

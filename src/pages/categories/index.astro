@@ -30,7 +30,7 @@ function toDate(input: string | number | Date) {
 }
 
 async function fetchNewsData() {
-    const response = await fetch("http://localhost:3000/news");
+    const response = await fetch(`${import.meta.env.HOST}/news`);
     const data = await response.json();
     return data.data;
 }

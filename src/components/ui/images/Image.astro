@@ -9,20 +9,27 @@ interface FsPathImage extends ImageMetadata {
     fsPath?: string;
 }
 
-// Gunakan image.src dari props tanpa menggunakan fsPath
 const image = props.src as FsPathImage;
 const showBlur = !props.disableBlur;
 
-// Jika gambar eksternal, tidak menggunakan fsPath dan efek blur
-const blurCSS = image.fsPath && showBlur ? await blurStyle(image.fsPath) : {};
+// Jika gambar lokal, gunakan blur CSS dari `blurStyle`, jika URL, gunakan CSS langsung
+const blurCSS = image.fsPath && showBlur ? await blurStyle(image.fsPath) : { filter: "blur(10px)", transition: "filter 0.3s ease" };
 ---
 
 {
     image.fsPath
-? (
+    ? (
+        // Untuk gambar lokal menggunakan fsPath
         <Image {...props} style={blurCSS} />
     )
-: (
-        <img src={props.src} alt={props.alt} {...props} />
+    : (
+        // Untuk gambar dari URL eksternal
+        <img
+            src={props.src}
+            alt={props.alt}
+            {...props}
+            style={blurCSS}
+            onload="this.style.filter='blur(0)'"
+        />
     )
 }

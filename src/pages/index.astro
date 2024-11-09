@@ -4,7 +4,7 @@ import BlogRecentCard from "@components/blog/BlogRecentCard.astro";
 import MainSection from "@components/ui/sections/MainSection.astro";
 import { SITE } from "@/config";
 
-const response = await fetch("http://localhost:3000/news");
+const response = await fetch(`${import.meta.env.HOST}/news`);
 const result = await response.json();
 const posts = result.data || []; // Ambil data dari API
 
