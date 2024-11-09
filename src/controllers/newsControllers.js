@@ -82,7 +82,7 @@ exports.createNews = async (req, res, next) => {
     try {
         const { title, content, category } = req.body;
         const userId = req.user.uid;
-        const thumbnail = req.file; // Assuming you're using multer to handle file uploads
+        const thumbnail = req.file;
 
         const userDoc = await db.collection('journalist').doc(userId).get();
         if (!userDoc.exists) {

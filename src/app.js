@@ -8,7 +8,6 @@ const errorHandler = require('./utils/errorHandler');
 
 const app = express();
 
-// Enable CORS for all routes
 app.use(cors());
 
 app.use(bodyParser.json());
