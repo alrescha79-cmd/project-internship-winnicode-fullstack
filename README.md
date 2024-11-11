@@ -80,7 +80,7 @@ Secara default, Server akan berjalan pada <http://localhost:3000>
   npm run dev
 ```
 
-Secara default, Server akan berjalan pada <http://localhost:3001>
+Secara default, Server akan berjalan pada <http://localhost:5000>
 
 ### Kembali ke folder utama
 
