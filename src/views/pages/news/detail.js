@@ -37,7 +37,7 @@ const Detail = () => {
         const getData = async () => {
             if (user && slug) {
                 try {
-                    const response = await fetchData(`http://localhost:3000/news/${slug}`, user)
+                    const response = await fetchData(`${import.meta.env.VITE_API}/news/${slug}`, user)
                     setData(response.data)
                 } catch (error) {
                     console.error('Error fetching data:', error)

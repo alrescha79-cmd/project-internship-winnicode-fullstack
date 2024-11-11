@@ -14,7 +14,7 @@ function CategoryDetailPage() {
       if (user && category) {
         try {
           const encodedCategory = encodeURIComponent(category)
-          const response = await fetchData(`http://localhost:3000/news/category/${encodedCategory}`, user.token)
+          const response = await fetchData(`${import.meta.env.VITE_API}/news/category/${encodedCategory}`, user.token)
           setData(response.data)
         } catch (error) {
           console.error('Error fetching data:', error)

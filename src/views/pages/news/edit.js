@@ -13,7 +13,7 @@ function EditPage() {
     const [title, setTitle] = useState('')
     const [image, setImage] = useState(null)
     const [category, setCategory] = useState('')
-    const [content, setContent] = useState('') // Inisialisasi content kosong
+    const [content, setContent] = useState('')
     const [categories, setCategories] = useState([])
     const [error, setError] = useState('')
     const [success, setSuccess] = useState('')
@@ -25,12 +25,12 @@ function EditPage() {
         const getData = async () => {
             if (user && slug) {
                 try {
-                    const response = await fetchData(`http://localhost:3000/news/${slug}`, user.token)
+                    const response = await fetchData(`${import.meta.env.VITE_API}/news/${slug}`, user.token)
                     const newsData = response.data
                     setData(newsData)
                     setTitle(newsData.title)
                     setCategory(newsData.category)
-                    setContent(newsData.content) // Set content untuk editor
+                    setContent(newsData.content)
                     setImage(newsData.thumbnailURL)
                 } catch (error) {
                     console.error('Error fetching data:', error)
@@ -42,7 +42,7 @@ function EditPage() {
         const getCategories = async () => {
             if (user) {
                 try {
-                    const response = await fetchData('http://localhost:3000/news', user.token)
+                    const response = await fetchData(`${import.meta.env.VITE_API}/news`, user.token)
                     const categories = response.data.reduce((acc, news) => {
                         if (!acc.includes(news.category)) {
                             acc.push(news.category)
@@ -92,7 +92,7 @@ function EditPage() {
             formData.append('category', category)
             formData.append('content', content)
 
-            const response = await postData(`http://localhost:3000/news/${slug}`, formData, user.token)
+            const response = await postData(`${import.meta.env.VITE_API}/news/${slug}`, formData, user.token)
 
             setSuccess('Berita berhasil diperbarui!')
             setTimeout(() => setSuccess(''), 3000)

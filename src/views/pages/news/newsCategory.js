@@ -13,7 +13,7 @@ const NewsCategory = () => {
     const getData = async () => {
       if (token) {
         try {
-          const response = await fetchData('http://localhost:3000/news', token)
+          const response = await fetchData(`${import.meta.env.VITE_API}/news`, token)
           setData(response.data)
         } catch (error) {
           console.error('Error fetching data:', error)
@@ -24,7 +24,6 @@ const NewsCategory = () => {
     getData()
   }, [token])
 
-  // Kelompokkan data berdasarkan kategori dan hitung jumlah berita untuk setiap kategori
   const groupedData = data.reduce((acc, news) => {
     const category = news.category
     if (!acc[category]) {
@@ -34,7 +33,6 @@ const NewsCategory = () => {
     return acc
   }, {})
 
-  // Konversi objek hasil pengelompokan menjadi array
   const uniqueData = Object.values(groupedData)
 
   const handleViewNews = (category) => {

@@ -69,7 +69,7 @@ const NewPost = () => {
       formData.append('category', category)
       formData.append('content', content)
 
-      const response = await postData('http://localhost:3000/news', formData, user.token)
+      const response = await postData(`${import.meta.env.VITE_API}/news`, formData, user.token)
       // console.log('Response:', response)
 
       setTitle('')

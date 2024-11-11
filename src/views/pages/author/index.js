@@ -17,7 +17,7 @@ const Author = () => {
     const getData = async () => {
       if (user && user.uid && user.token) {
         try {
-          const response = await fetchData(`http://localhost:3000/journalist/${user.uid}`, user.token)
+          const response = await fetchData(`${import.meta.env.VITE_API}/journalist/${user.uid}`, user.token)
           setData(response)
         } catch (error) {
           console.error('Error fetching data:', error)
@@ -28,7 +28,7 @@ const Author = () => {
     const getAuthors = async () => {
       if (user && user.token) {
         try {
-          const response = await fetchData('http://localhost:3000/journalist', user.token)
+          const response = await fetchData(`${import.meta.env.VITE_API}/journalist`, user.token)
           setAuthors(response)
         } catch (error) {
           console.error('Error fetching authors:', error)
@@ -44,7 +44,7 @@ const Author = () => {
     event.preventDefault()
     if (user && user.token) {
       try {
-        const response = await postData('http://localhost:3000/journalist/add', newAuthor, user.token)
+        const response = await postData(`${import.meta.env.VITE_API}/journalist/add`, newAuthor, user.token)
         setAuthors([...authors, response])
         setNewAuthor({ name: '', email: '', phone: '' }) 
       } catch (error) {

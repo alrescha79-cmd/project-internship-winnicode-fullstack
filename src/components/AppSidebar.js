@@ -13,7 +13,7 @@ import CIcon from '@coreui/icons-react'
 
 import { AppSidebarNav } from './AppSidebarNav'
 
-import logo from 'src/assets/brand/LOGOMIRA.png'
+import logo from 'src/assets/brand/logo.png'
 
 // sidebar nav config
 import navigation from '../_nav'

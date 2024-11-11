@@ -16,7 +16,7 @@ const News = () => {
     const getData = async () => {
       if (user) {
         try {
-          const response = await fetchData('http://localhost:3000/news', user)
+          const response = await fetchData(`${import.meta.env.VITE_API}/news`, user)
           setData(response.data)
         } catch (error) {
           console.error('Error fetching data:', error)
@@ -38,7 +38,7 @@ const News = () => {
   const handleDelete = async () => {
     if (user && user.token && selectedId) {
       try {
-        await deleteData(`http://localhost:3000/news/${selectedId}`, user.token)
+        await deleteData(`${import.meta.env.VITE_API}/news/${selectedId}`, user.token)
         const updatedData = data.filter(news => news.id !== selectedId)
         setData(updatedData)
         setModalVisible(false)

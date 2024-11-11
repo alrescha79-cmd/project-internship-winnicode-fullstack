@@ -13,7 +13,7 @@ const detailAuthorPage = () => {
         const getData = async () => {
             if (user && id) {
                 try {
-                    const response = await fetchData(`http://localhost:3000/journalist/${id}`, user.token)
+                    const response = await fetchData(`${import.meta.env.VITE_API}/journalist/${id}`, user.token)
                     setData(response)
                     console.log(response)
                 } catch (error) {
