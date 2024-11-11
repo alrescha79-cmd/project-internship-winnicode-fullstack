@@ -137,6 +137,7 @@ const socialPlatforms: SocialPlatform[] = [
                 }
 
                 setTimeout(() => {
+                    // eslint-disable-next-line style/max-statements-per-line
                     if ($successText && oldSuccessText) { $successText.textContent = oldSuccessText; }
                     if ($default && $success) {
                         $success.style.display = "";

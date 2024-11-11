@@ -4,6 +4,7 @@ import tailwind from "@astrojs/tailwind";
 import react from "@astrojs/react";
 import sitemap from "@astrojs/sitemap";
 import partytown from "@astrojs/partytown";
+import node from "@astrojs/node";
 import { SITE } from "./src/config.ts";
 import { remarkReadingTime } from "./src/support/plugins.ts";
 import { uploadAssetsToS3 } from "./src/support/uploader.ts";
@@ -40,11 +41,10 @@ export default defineConfig({
     },
     prefetch: true,
     output: "server",
+    adapter: node({
+        mode: "standalone",
+    }),
     build: {
-    // Specifies the directory in the build output where Astro-generated assets (bundled JS and CSS for example) should live.
-    // see https://docs.astro.build/en/reference/configuration-reference/#buildassets
-        assets: "assets",
-        // see https://docs.astro.build/en/reference/configuration-reference/#buildassetsprefix
-        assetsPrefix: process.env.S3_ENABLE ? "https://images.godruoyi.com/gblog" : "",
+        assets: "dist",
     },
 });
