@@ -114,17 +114,15 @@ exports.updateNews = async (req, res, next) => {
     try {
         const { id } = req.params;
         const { title, content, category } = req.body;
-        const thumbnail = req.file; // Assuming you're using multer to handle file uploads
-
+        const thumbnail = req.file;
         const slug = slugify(title, { lower: true });
-
         const updatedNews = await NewsModel.updateNews(id, { title, content, category, thumbnail });
+
         res.status(200).json({
             message: 'News updated successfully',
             data: updatedNews
         });
 
-        // Update post count for the journalist
         const userId = req.user.uid;
         const postCount = await Journalist.getPostCount(userId);
         await db.collection('journalist').doc(userId).update({
@@ -147,7 +145,6 @@ exports.deleteNews = async (req, res, next) => {
             data: deletedNews
         });
 
-        // Update post count for the journalist
         const userId = req.user.uid;
         const postCount = await Journalist.getPostCount(userId);
         await db.collection('journalist').doc(userId).update({
@@ -155,6 +152,27 @@ exports.deleteNews = async (req, res, next) => {
         });
     } catch (error) {
         if (error.message === 'News not found') {
+            return res.status(404).json({ message: error.message });
+        }
+        next(error);
+    }
+};
+
+exports.updateCategory = async (req, res, next) => {
+    try {
+        const { oldCategory, newCategory } = req.body;
+
+        if (!oldCategory || !newCategory) {
+            return res.status(400).json({ message: 'Both oldCategory and newCategory are required' });
+        }
+
+        const result = await NewsModel.updateCategory(oldCategory, newCategory);
+        res.status(200).json({
+            message: 'Category updated successfully',
+            data: result
+        });
+    } catch (error) {
+        if (error.message === 'Category not found') {
             return res.status(404).json({ message: error.message });
         }
         next(error);

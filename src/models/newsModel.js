@@ -52,7 +52,6 @@ const NewsModel = {
 
 
     async createNews({ title, content, authorName, authorId, category, thumbnail }) {
-        // Check if title already exists
         const existingNews = await db.collection('news').where('title', '==', title).get();
         if (!existingNews.empty) {
             throw new Error('Title already exists');
@@ -60,7 +59,6 @@ const NewsModel = {
 
         const slug = slugify(title, { lower: true });
 
-        // Upload thumbnail to Cloud Storage
         const bucket = storage.bucket();
         const thumbnailRef = bucket.file(`thumbnails/${uuidv4()}`);
         await thumbnailRef.save(thumbnail.buffer, {
@@ -85,7 +83,6 @@ const NewsModel = {
             createdAt: admin.firestore.FieldValue.serverTimestamp()
         });
 
-        // Increment post count for the journalist
         await db.collection('journalist').doc(authorId).update({
             postCount: admin.firestore.FieldValue.increment(1)
         });
@@ -110,7 +107,6 @@ const NewsModel = {
         const doc = snapshot.docs[0];
         const newsRef = db.collection('news').doc(doc.id);
 
-        // Check if title already exists (excluding the current news)
         const existingNews = await db.collection('news').where('title', '==', title).get();
         if (!existingNews.empty && existingNews.docs[0].id !== doc.id) {
             throw new Error('Title already exists');
@@ -118,7 +114,6 @@ const NewsModel = {
 
         let thumbnailURL = doc.data().thumbnailURL;
         if (thumbnail) {
-            // Upload new thumbnail to Cloud Storage
             const bucket = storage.bucket();
             const thumbnailRef = bucket.file(`thumbnails/${uuidv4()}`);
             await thumbnailRef.save(thumbnail.buffer, {
@@ -151,7 +146,24 @@ const NewsModel = {
         }
         await newsRef.delete();
         return { id: newsId, ...doc.data() };
+    },
+
+    async updateCategory(oldCategory, newCategory) {
+        const snapshot = await db.collection('news').where('category', '==', oldCategory).get();
+        if (snapshot.empty) {
+            throw new Error('Category not found');
+        }
+    
+        const batch = db.batch();
+        snapshot.forEach(doc => {
+            const newsRef = db.collection('news').doc(doc.id);
+            batch.update(newsRef, { category: newCategory });
+        });
+    
+        await batch.commit();
+        return { oldCategory, newCategory, count: snapshot.size };
     }
+    
 };
 
 module.exports = NewsModel;
