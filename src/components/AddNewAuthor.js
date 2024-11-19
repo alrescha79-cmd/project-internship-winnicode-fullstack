@@ -2,6 +2,7 @@ import React from 'react'
 import { CForm, CFormInput, CButton } from '@coreui/react'
 import PhoneInput from 'react-phone-input-2'
 import 'react-phone-input-2/lib/style.css'
+import '../css/author/author.css'
 
 const AddNewAuthor = ({ newAuthor, setNewAuthor, handleAddAuthor }) => {
     const handleChange = (e) => {

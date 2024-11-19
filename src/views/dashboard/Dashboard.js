@@ -10,9 +10,9 @@ const Dashboard = () => {
     const getData = async () => {
       if (token) {
         try {
-          const response = await fetchData('http://localhost:3000/news', token)
+          const response = await fetchData(`${import.meta.env.VITE_API}/news`, token)
           setData(response.data)
-          console.log(response.data)
+          // console.log(response.data)
         } catch (error) {
           console.error('Error fetching data:', error)
         }

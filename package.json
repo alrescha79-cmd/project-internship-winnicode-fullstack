@@ -35,7 +35,7 @@
     "redux": "5.0.1",
     "simplebar-react": "^3.2.4",
     "styled-components": "^6.1.11",
-    "sweetalert2": "^11.6.13",
+    "sweetalert2": "^11.14.5",
     "sweetalert2-react-content": "^5.0.7"
   },
   "devDependencies": {

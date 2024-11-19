@@ -6,9 +6,15 @@ const CategorySelect = ({ category, categories, handleCategoryChange }) => {
         <CFormSelect
             aria-label="Kategori Berita"
             value={category}
-            options={categories}
             onChange={handleCategoryChange}
-        />
+        >
+            {categories.map((cat, index) => (
+                <option key={index} value={cat.value}>
+                    {cat.label}
+                </option>
+            ))}
+            <option value="add-new-category">Tambah Kategori</option>
+        </CFormSelect>
     )
 }
 

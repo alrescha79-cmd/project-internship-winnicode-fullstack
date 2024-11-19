@@ -1,0 +1,5 @@
+/* ubah warna #editor .ql-editor.ql-blank::before sesuai dengan tema dark atau light */
+
+#editor .ql-editor.ql-blank::before {
+    color: rgb(255, 128, 0);
+}

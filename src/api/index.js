@@ -7,7 +7,6 @@ export const fetchData = async (url, token) => {
                 Authorization: `Bearer ${token}`,
             },
         })
-        // console.log('API Response:', response)
         return response.data
     } catch (error) {
         console.error(error)
@@ -38,3 +37,19 @@ export const deleteData = async (url, token) => {
     })
     return response.data
 }
+
+export const patchData = async (url, body, token) => {
+    try {
+        const response = await axios.patch(url, body, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+                'Content-Type': 'application/json',
+            },
+        })
+        return response.data
+    } catch (error) {
+        console.error('Error in patchData:', error)
+        throw error
+    }
+}
+

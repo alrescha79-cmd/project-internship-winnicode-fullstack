@@ -3,6 +3,7 @@ import { CForm, CAlert, CButton } from '@coreui/react'
 import TitleInput from '../../../components/TitleInput'
 import ThumbnailInput from '../../../components/ThumbnailInput'
 import CategorySelect from '../../../components/CategorySelect'
+import CategoryModal from '../../../components/CategoryModal'
 import ContentEditor from '../../../components/ContentEditor'
 import useFirebaseAuthToken from '../../../hook/useFirebaseAuthToken'
 import { fetchData, postData } from '../../../api'
@@ -17,12 +18,14 @@ const NewPost = () => {
   const [success, setSuccess] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const user = useFirebaseAuthToken()
+  const [modalVisible, setModalVisible] = useState(false)
+  const [newCategory, setNewCategory] = useState('')
 
   useEffect(() => {
     const getCategories = async () => {
       if (user) {
         try {
-          const response = await fetchData('http://localhost:3000/news', user)
+          const response = await fetchData(`${import.meta.env.VITE_API}/news`, user)
           const categories = response.data.reduce((acc, news) => {
             if (!acc.includes(news.category)) {
               acc.push(news.category)
@@ -48,7 +51,12 @@ const NewPost = () => {
   }
 
   const handleCategoryChange = (event) => {
-    setCategory(event.target.value)
+    const selectedCategory = event.target.value
+    if (selectedCategory === 'add-new-category') {
+      setModalVisible(true)
+    } else {
+      setCategory(selectedCategory)
+    }
   }
 
   const handleSubmit = async () => {
@@ -88,6 +96,27 @@ const NewPost = () => {
     }
   }
 
+  const handleNewCategoryChange = (event) => {
+    setNewCategory(event.target.value)
+  }
+
+  const handleAddNewCategory = () => {
+    if (newCategory && !categories.some(cat => cat.value === newCategory)) {
+      setCategories([...categories, { label: newCategory, value: newCategory }])
+      setCategory(newCategory)
+      setModalVisible(false)
+      setNewCategory('')
+    } else {
+      setError('Kategori sudah ada atau nama kategori tidak valid.')
+    }
+  }
+
+  const handleCloseModal = () => {
+    setModalVisible(false)
+    setNewCategory('')
+    setError('')
+  }
+
   return (
     <>
       <div>
@@ -101,6 +130,13 @@ const NewPost = () => {
           </div>
           <div className="mt-4">
             <CategorySelect category={category} categories={categories} handleCategoryChange={handleCategoryChange} />
+            <CategoryModal
+              visible={modalVisible}
+              onClose={handleCloseModal}
+              onSubmit={handleAddNewCategory}
+              onChange={handleNewCategoryChange}
+              error={error}
+            />
           </div>
           <div className="mt-4">
             <CForm>

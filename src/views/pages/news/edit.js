@@ -5,6 +5,7 @@ import { fetchData, postData } from '../../../api'
 import { CAlert, CButton, CForm, CImage } from '@coreui/react'
 import ContentEditor from '../../../components/ContentEditor'
 import CategorySelect from '../../../components/CategorySelect'
+import CategoryModal from '../../../components/CategoryModal'
 import ThumbnailInput from '../../../components/ThumbnailInput'
 import TitleInput from '../../../components/TitleInput'
 
@@ -18,6 +19,8 @@ function EditPage() {
     const [error, setError] = useState('')
     const [success, setSuccess] = useState('')
     const [isSubmitting, setIsSubmitting] = useState(false)
+    const [modalVisible, setModalVisible] = useState(false)
+    const [newCategory, setNewCategory] = useState('')
     const user = useFirebaseAuthToken()
     const { slug } = useParams()
 
@@ -69,7 +72,33 @@ function EditPage() {
     }
 
     const handleCategoryChange = (event) => {
-        setCategory(event.target.value)
+        const selectedCategory = event.target.value
+        if (selectedCategory === 'add-new-category') {
+            setModalVisible(true)
+        } else {
+            setCategory(selectedCategory)
+        }
+    }
+
+    const handleNewCategoryChange = (event) => {
+        setNewCategory(event.target.value)
+    }
+
+    const handleAddNewCategory = () => {
+        if (newCategory && !categories.some(cat => cat.value === newCategory)) {
+            setCategories([...categories, { label: newCategory, value: newCategory }])
+            setCategory(newCategory)
+            setModalVisible(false)
+            setNewCategory('')
+        } else {
+            setError('Kategori sudah ada atau nama kategori tidak valid.')
+        }
+    }
+
+    const handleCloseModal = () => {
+        setModalVisible(false)
+        setNewCategory('')
+        setError('')
     }
 
     const handleSubmit = async () => {
@@ -122,6 +151,13 @@ function EditPage() {
                     </div>
                     <div className="mt-4">
                         <CategorySelect category={category} categories={categories} handleCategoryChange={handleCategoryChange} />
+                        <CategoryModal
+                            visible={modalVisible}
+                            onClose={handleCloseModal}
+                            onSubmit={handleAddNewCategory}
+                            onChange={handleNewCategoryChange}
+                            error={error}
+                        />
                     </div>
                     <div className="mt-4">
                         <CForm>

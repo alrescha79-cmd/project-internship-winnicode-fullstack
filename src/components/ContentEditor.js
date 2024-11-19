@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react'
 import Quill from 'quill'
 import 'quill/dist/quill.snow.css'
+import '../css/news/ContentEditor.css'
 
 const ContentEditor = ({ value, onChange }) => {
     const editorRef = useRef(null)
