@@ -9,6 +9,8 @@ const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
 router.get('/', newsController.getAllNews);
+router.get('/search', newsController.searchNews);
+router.get('/author/:authorId', newsController.getNewsByAuthor);
 router.get('/category/:category', newsController.getNewsByCategory);
 router.patch('/category', authMiddleware, newsController.updateCategory);
 router.get('/:slug', newsController.getNewsBySlug);

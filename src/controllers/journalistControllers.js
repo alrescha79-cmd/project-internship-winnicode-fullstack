@@ -15,12 +15,14 @@ exports.addJournalist = async (req, res) => {
 
         res.status(201).json({
             message: 'Journalist successfully created and added to Firestore',
-            journalistId,
+            // journalistId,
             name,
             phone,
             email,
             password: '12345678',
-            profilePicture: 'https://randomuser.me/api/portraits/lego/5.jpg'
+            // profilePicture: 'https://randomuser.me/api/portraits/lego/5.jpg',
+            createdAt: new Date().toISOString(),
+            tips: 'Please change the password after the first login'
         });
     } catch (error) {
         console.log(error.message);
@@ -60,15 +62,16 @@ exports.getJournalistById = async (req, res) => {
 exports.updateJournalist = async (req, res) => {
     try {
         const journalistId = req.params.id;
-        const { name, phone, email } = req.body;
+        const { name, phone, email, password } = req.body;
+        const profilePicture = req.file;
 
-        await Journalist.updateJournalist(journalistId, { name, phone, email });
+        await Journalist.updateJournalist(journalistId, { name, phone, email, password, profilePicture });
 
         res.status(200).json({
             message: 'Journalist data updated successfully'
         });
     } catch (error) {
-        console.log(error.message);
+        console.error(error.message);
         res.status(500).json({
             message: 'Failed to update Journalist data',
             error: error.message

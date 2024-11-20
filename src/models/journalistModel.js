@@ -48,18 +48,35 @@ const Journalist = {
         };
     },
 
-    async updateJournalist(journalistId, { name, phone, email }) {
+    async updateJournalist(journalistId, { name, phone, email, password, profilePicture }) {
         const journalistDoc = db.collection('journalist').doc(journalistId);
         const journalist = await journalistDoc.get();
         if (!journalist.exists) {
             throw new Error('Journalist not found');
         }
 
-        await journalistDoc.update({
-            name,
-            phone,
-            email
-        });
+        const updates = { name, phone, email };
+
+        if (profilePicture) {
+            const bucket = admin.storage().bucket();
+            const profileRef = bucket.file(`profilePictures/${journalistId}`);
+            await profileRef.save(profilePicture.buffer, {
+                metadata: { contentType: profilePicture.mimetype }
+            });
+
+            const profilePictureURL = await profileRef.getSignedUrl({
+                action: 'read',
+                expires: '03-09-2491'
+            });
+
+            updates.profilePicture = profilePictureURL[0];
+        }
+
+        if (password) {
+            await admin.auth().updateUser(journalistId, { password });
+        }
+
+        await journalistDoc.update(updates);
     },
 
     async deleteJournalist(journalistId) {

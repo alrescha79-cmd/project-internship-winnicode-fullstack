@@ -50,6 +50,34 @@ const NewsModel = {
         return newsList;
     },
 
+    async getNewsByAuthor(authorId) {
+        const snapshot = await db.collection('news').where('authorId', '==', authorId).get();
+        const newsList = [];
+        snapshot.forEach(doc => {
+            newsList.push({
+                id: doc.id,
+                ...doc.data()
+            });
+        });
+        return newsList;
+    },    
+
+    async searchNews(query) {
+        const snapshot = await db.collection('news')
+            .where('title', '>=', query)
+            .where('title', '<=', query + '\uf8ff')
+            .get();
+    
+        const newsList = [];
+        snapshot.forEach(doc => {
+            newsList.push({
+                id: doc.id,
+                ...doc.data()
+            });
+        });
+    
+        return newsList;
+    },    
 
     async createNews({ title, content, authorName, authorId, category, thumbnail }) {
         const existingNews = await db.collection('news').where('title', '==', title).get();

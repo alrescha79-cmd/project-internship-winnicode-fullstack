@@ -77,6 +77,52 @@ exports.getNewsByCategory = async (req, res, next) => {
     }
 };
 
+exports.getNewsByAuthor = async (req, res, next) => {
+    try {
+        const { authorId } = req.params;
+
+        if (!authorId) {
+            return res.status(400).json({ message: 'Author ID is required' });
+        }
+
+        const newsList = await NewsModel.getNewsByAuthor(authorId);
+
+        if (newsList.length === 0) {
+            return res.status(404).json({ message: 'No news found for this author' });
+        }
+
+        res.status(200).json({
+            message: 'News retrieved successfully',
+            data: newsList
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+exports.searchNews = async (req, res, next) => {
+    try {
+        const { query } = req.query;
+
+        if (!query) {
+            return res.status(400).json({ message: 'Search query is required' });
+        }
+
+        const newsList = await NewsModel.searchNews(query);
+
+        if (newsList.length === 0) {
+            return res.status(404).json({ message: 'No news found' });
+        }
+
+        res.status(200).json({
+            message: 'Search results retrieved successfully',
+            data: newsList
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
 
 exports.createNews = async (req, res, next) => {
     try {
