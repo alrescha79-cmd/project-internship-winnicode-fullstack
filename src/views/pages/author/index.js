@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import useFirebaseAuthToken from '../../../hook/useFirebaseAuthToken'
-import { fetchData, postData } from '../../../api'
-import { CRow, CCol, CCard, CCardBody, CCardTitle, CButton } from '@coreui/react'
+import { fetchData, postData, PostPhoneData } from '../../../api'
+import { CRow, CCol, CCard, CCardBody, CCardTitle } from '@coreui/react'
 import AddNewAuthor from '../../../components/AddNewAuthor'
 import AccountAuthor from '../../../components/AccountAuthor'
 import ListAuthors from '../../../components/ListAuthors'
@@ -10,59 +10,72 @@ const Author = () => {
   const [data, setData] = useState(null)
   const [authors, setAuthors] = useState([])
   const [newAuthor, setNewAuthor] = useState({ name: '', email: '', phone: '' })
-  const [editAuthor, setEditAuthor] = useState(null)
+  const [error, setError] = useState('')
   const user = useFirebaseAuthToken()
 
   useEffect(() => {
-    const getData = async () => {
-      if (user && user.uid && user.token) {
+    const fetchDataFromAPI = async () => {
+      if (user?.token) {
         try {
-          const response = await fetchData(`${import.meta.env.VITE_API}/journalist/${user.uid}`, user.token)
-          setData(response)
+          const [authorData, allAuthors] = await Promise.all([
+            fetchData(`${import.meta.env.VITE_API}/journalist/${user.uid}`, user.token),
+            fetchData(`${import.meta.env.VITE_API}/journalist`, user.token),
+          ])
+          setData(authorData)
+          setAuthors(allAuthors)
         } catch (error) {
           console.error('Error fetching data:', error)
+          setError('Gagal memuat data penulis')
         }
       }
     }
 
-    const getAuthors = async () => {
-      if (user && user.token) {
-        try {
-          const response = await fetchData(`${import.meta.env.VITE_API}/journalist`, user.token)
-          setAuthors(response)
-        } catch (error) {
-          console.error('Error fetching authors:', error)
-        }
-      }
-    }
-
-    getData()
-    getAuthors()
+    fetchDataFromAPI()
   }, [user])
 
-  const handleAddAuthor = async (event) => {
-    event.preventDefault()
-    if (user && user.token) {
-      try {
-        const response = await postData(`${import.meta.env.VITE_API}/journalist/add`, newAuthor, user.token)
-        setAuthors([...authors, response])
-        setNewAuthor({ name: '', email: '', phone: '' }) 
-      } catch (error) {
-        console.error('Error adding author:', error)
-      }
+  const handleAddAuthor = async () => {
+    if (!newAuthor.phone.startsWith('+')) {
+        setError('Nomor telepon harus dimulai dengan tanda + dan kode negara.')
+        return
     }
-  }
+
+    const phoneRegex = /^\+[1-9]\d{1,14}$/
+    if (!phoneRegex.test(newAuthor.phone)) {
+        setError('Nomor telepon tidak valid. Gunakan format +628123456789.')
+        return
+    }
+
+    // Lanjutkan dengan pengiriman data ke API...
+    console.log('Data yang akan dikirim:', newAuthor)
+    try {
+      const response = await PostPhoneData(`${import.meta.env.VITE_API}/journalist/add`, newAuthor, user.token)
+      console.log('Respons dari server:', response)
+      setNewAuthor({ name: '', email: '', phone: '' })
+      setError('')
+      alert('Penulis berhasil ditambahkan!')
+    } catch (err) {
+      console.error('Error adding author:', err)
+      setError(err.response?.data?.message || 'Terjadi kesalahan saat menambahkan penulis.')
+    }
+}
+
+
 
   return (
     <>
-      <CRow className='mb-4'>
+      <CRow className="mb-4">
         <AccountAuthor data={data} />
         <CCol sm={9}>
           <CCard>
             <CCardBody>
-              <CCardTitle className='text-center'>Tambah Penulis Baru</CCardTitle>
+              <CCardTitle className="text-center">Tambah Penulis Baru</CCardTitle>
               <hr />
-              <AddNewAuthor newAuthor={newAuthor} setNewAuthor={setNewAuthor} handleAddAuthor={handleAddAuthor} />
+              <AddNewAuthor
+                newAuthor={newAuthor}
+                setNewAuthor={setNewAuthor}
+                handleAddAuthor={handleAddAuthor}
+                error={error}
+              />
             </CCardBody>
           </CCard>
         </CCol>

@@ -8,6 +8,7 @@ const HeaderWrapper = styled.div`
   justify-content: space-between;
   align-items: center;
   margin-bottom: 10px;
+  width: 100%;
 
   .search-input {
     width: 300px;
@@ -16,12 +17,48 @@ const HeaderWrapper = styled.div`
   .filter-select {
     width: 250px;
   }
+
+`
+
+const CustomTableWrapper = styled.div`
+  .rdt_Table {
+    font-size: 16px;
+  }
+  .rdt_TableRow {
+    height: 75px;
+  }
+  .rdt_TableCell {
+    padding: 2px 2px;
+  }
 `
 
 const DataTableComponent = ({ columns, data, filterOptions, searchOptions }) => {
   const [searchText, setSearchText] = useState('')
   const [filterValue, setFilterValue] = useState('')
   const [filteredData, setFilteredData] = useState(data)
+  const [theme, setTheme] = useState('light')
+
+  useEffect(() => {
+    const updateTheme = () => {
+      const currentTheme = document.documentElement.getAttribute('data-coreui-theme') || 'light'
+      setTheme(currentTheme)
+    }
+
+    updateTheme()
+
+    const observer = new MutationObserver(() => {
+      updateTheme()
+    })
+
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['data-coreui-theme'],
+    })
+
+    return () => {
+      observer.disconnect()
+    }
+  }, [])
 
   useEffect(() => {
     let tempData = data
@@ -74,6 +111,7 @@ const DataTableComponent = ({ columns, data, filterOptions, searchOptions }) => 
   )
 
   return (
+    <CustomTableWrapper>
     <DataTable
       title={customHeader}
       columns={columns}
@@ -84,7 +122,10 @@ const DataTableComponent = ({ columns, data, filterOptions, searchOptions }) => 
       selectableRows
       striped
       fixedHeader
+      dense
+      theme={theme}
     />
+    </CustomTableWrapper>
   )
 }
 

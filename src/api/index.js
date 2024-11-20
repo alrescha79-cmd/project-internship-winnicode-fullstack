@@ -29,6 +29,21 @@ export const postData = async (url, data, token) => {
     }
 }
 
+export const PostPhoneData = async (url, data, token) => {
+    try {
+        const response = await axios.post(url, data, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+                'Content-Type': 'application/json',
+            },
+        })
+        return response.data
+    } catch (error) {
+        console.error(error)
+        throw error
+    }
+}
+
 export const deleteData = async (url, token) => {
     const response = await axios.delete(url, {
         headers: {
@@ -52,4 +67,19 @@ export const patchData = async (url, body, token) => {
         throw error
     }
 }
+
+export const putData = async (url, data, token) => {
+    try {
+        const response = await axios.put(url, data, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+                'Content-Type': 'multipart/form-data',
+            },
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error in putData:', error);
+        throw error;
+    }
+};
 

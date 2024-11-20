@@ -12,17 +12,17 @@ const NewsCategory = () => {
   const [toast, addToast] = useState(0)
   const [isSaving, setIsSaving] = useState(false)
   const toaster = useRef()
-  const token = useFirebaseAuthToken()
+  const user = useFirebaseAuthToken()
   const navigate = useNavigate()
 
   useEffect(() => {
     fetchCategories()
-  }, [token])
+  }, [user])
 
   const fetchCategories = async () => {
-    if (token) {
+    if (user) {
       try {
-        const response = await fetchData(`${import.meta.env.VITE_API}/news`, token)
+        const response = await fetchData(`${import.meta.env.VITE_API}/news`, user)
         setData(response.data)
       } catch (error) {
         console.error('Error fetching data:', error)
@@ -66,7 +66,7 @@ const NewsCategory = () => {
         newCategory: newCategory.trim(),
       }
 
-      await patchData(`${import.meta.env.VITE_API}/news/category`, body, token.token)
+      await patchData(`${import.meta.env.VITE_API}/news/category`, body, user.token)
       addToast(createToast('Success', 'Kategori berhasil diubah.', 'success'))
 
       setVisible(false)
