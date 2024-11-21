@@ -17,30 +17,66 @@ exports.addJournalist = async (req, res) => {
         // Send welcome email
         const emailContent = {
             to: email,
-            subject: 'Selamat Datang di Platform Kami',
-            text: `Hai ${name},\n\nSelamat datang di platform kami! Akun Penulis Anda telah berhasil dibuat.`,
+            subject: 'Informasi Akun Penulis',
+            text: `Hai ${name},\n\nIni adalah email konfirmasi bahwa Anda telah menjadi Penulis di Portal Berita Kami.`,
             html: `<!DOCTYPE html>
                     <html>
                     <head>
-                    <title>Selamat</title>
+                        <title>Selamat</title>
+                        <style>
+                        body {
+                            font-family: Arial, sans-serif;
+                            text-align: center;
+                        }
+                        img {
+                            max-width: 100%;
+                            height: auto;
+                            margin: 0 auto;
+                        }
+                        h2,
+                        h3,
+                        h4,
+                        h5,
+                        p {
+                            text-align: start;
+                        }
+                        .q {
+                            margin-left: 1rem;
+                            border : 1px solid #000;
+                            padding : 1rem;
+                            border-radius : 5px;
+                            background: #f4f4f4;
+                        }
+                        </style>
                     </head>
                     <body>
+                        <img
+                        src="https://winnicode.com/mazer/images/nav-banner-logo.png"
+                        alt="Winnicode Logo"
+                        />
+                        <h2>Hai ${name},</h2>
+                        <p>
+                        Ini adalah email konfirmasi bahwa Anda telah menjadi Penulis di Portal
+                        Berita Kami.
+                        </p>
+                        <br />
+                        <h3>Berikut merupakan informasi akun Anda:</h3>
+                        <div class="q">
+                        <p>Nama : ${name}</p>
+                        <p>Nomor HP : ${phone}</p>
+                        <p>Email : ${email}</p>
+                        <p>Password : 12345678</p>
+                        </div>
 
-                    <h3>Berikut merupakan informasi akun Author Anda:</h3>
-                    <p>Nama : ${name}</p>
-                    <p>Nomor HP : ${phone}</p>
-                    <p>Email : ${email}</p>
-                    <p>Password : 12345678</p>
+                        <h5>Gunakan Email dan Password untuk login ke admin portal</h5>
 
-                    <h5>Gunakan Email dan Password untuk login ke admin portal</h5>
-                    <br/>
+                        <h4 style="color: #ff0000">Ubah Password Anda setelah berhasil login</h4>
 
-                    <h4 style="color:#FF0000;" >Ubah Password Anda setelah berhasil login</h4>
-
-
+                        <p>Terima kasih</p>
+                        <br />
+                        <p>Admin Winnicode</p>
                     </body>
-                    </html>
-                    `
+                    </html>`
         };
         await sendEmail(emailContent);
 
