@@ -1,0 +1,58 @@
+backend/node_modules
+backend/node_modules
+
+backend/.env
+
+backend/.git
+frontend/.git
+dashboard-portal/.git
+
+backend/adminsdk.json
+
+
+# dependencies
+dashboard-portal/node_modules
+dashboard-portal/package-lock.json
+dashboard-portal/yarn.lock
+
+# testing
+dashboard-portal/coverage
+
+# production
+dashboard-portal/build
+
+# misc
+dashboard-portal/.eslintcache
+dashboard-portal/.DS_Store
+dashboard-portal/.idea
+
+dashboard-portal/npm-debug.log*
+dashboard-portal/yarn-debug.log*
+dashboard-portal/yarn-error.log*
+
+# local env files
+frontend/dashboard-portal/.env
+
+# build output
+frontend/dist/
+# generated types
+frontend/.astro/
+
+# dependencies
+frontend/node_modules/
+
+# logs
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
+frontend/pnpm-debug.log*
+
+
+# environment variables
+frontend/.env
+frontend/.env.production
+
+# macOS-specific files
+frontend/.DS_Store
+
+frontend/.vscode
