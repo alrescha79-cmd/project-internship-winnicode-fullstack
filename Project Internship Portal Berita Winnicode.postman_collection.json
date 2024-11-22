@@ -1,0 +1,876 @@
+{
+	"info": {
+		"_postman_id": "9510e519-ed94-4991-b1af-f592813351b2",
+		"name": "Project Internship Portal Berita Winnicode",
+		"description": "# **API Documentation for News and Journalist Management**\n\n## **Author Information**\n\n**Prepared By**:  \n**Name**: Anggun Caksono  \n**Internship Role**: Full-Stack Developer  \n**Project Title**: Portal Berita  \n**Organization**: PT Winnicode Garuda Teknologi  \n**Purpose**: This documentation is prepared as part of my final internship project to demonstrate the development and management of an API for news and journalist operations.\n\n---\n\n## **Introduction**\n\nThis API allows for the management of news articles and journalist profiles. It includes features for login, adding new journalists, creating news articles, and sending automated emails with attachments. Below are the detailed instructions for using the endpoints.\n\n---\n\n## **1\\. Login**\n\n**Endpoint**:  \n`POST http://localhost:3000/auth/login`\n\n**Description**:  \nLogin to get the authentication token required for accessing secured endpoints.\n\n### **Request Body (JSON)**:\n\n``` json\n{\n    \"email\": \"son@gmail.com\",\n    \"password\": \"12345678\"\n}\n\n ```\n\n### **Steps**:\n\n1. Open Postman and select the `Auth` folder.\n2. Choose the `Login` request or directly input the URL.\n3. Set the request method to `POST`.\n4. In the `Body` tab, select `raw` and set the type to `JSON`.\n5. Paste the above JSON body and send the request.\n    \n\n### **Response Example**:\n\n``` json\n{\n    \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...\"\n}\n\n ```\n\n**Important**:  \nCopy the `token` value from the response and use it as a Bearer Token for all secured API requests.\n\n---\n\n## **2\\. Add a New Journalist**\n\n**Endpoint**:  \n`POST http://localhost:3000/journalist/add`\n\n**Description**:  \nAdds a new journalist to the system and sends an automated email to the registered journalist containing their account details. The email includes:\n\n- Account details (Name, Phone, Email, Default Password)\n- A screenshot of the email content as an attachment.\n    \n\n### **Request Headers**:\n\n- Authorization: Bearer\n    \n\n### **Request Body (JSON)**:\n\n``` json\n{\n    \"email\": \"emailanda@gmail.com\",\n    \"name\": \"Penulis\",\n    \"phone\": \"+628763048336\"\n}\n\n ```\n\n### **Steps**:\n\n1. Ensure you have the Bearer Token copied from the login response.\n2. Open the `Journalist` folder and choose the `Add Journalist` request or directly input the URL.\n3. Set the request method to `POST`.\n4. In the `Body` tab, select `raw` and set the type to `JSON`.\n5. Paste the above JSON body and send the request.\n    \n\n**Notes**:\n\n- The phone number must be in international format (`+`).\n    \n\n### **Response Example**:\n\n``` json\n{\n    \"message\": \"Journalist successfully created and added to Firestore. Email has been sent.\",\n    \"name\": \"Penulis\",\n    \"phone\": \"+628763048336\",\n    \"email\": \"emailanda@gmail.com\",\n    \"password\": \"12345678\"\n}\n\n ```\n\n### **Email Example**:\n\nThe journalist will receive an email with the following content:\n\n<img src=\"https://content.pstmn.io/e37d6029-708a-46df-abb8-7b691d35d07c/U2NyZWVuc2hvdCBmcm9tIDIwMjQtMTEtMjIgMTItMTctMjMucG5n\" alt=\"Email%20konfirmasi%20detail%20akun\">\n\n---\n\n## **3\\. Add a New News Article**\n\n**Endpoint**:  \n`POST http://localhost:3000/news`\n\n**Description**:  \nAdds a new news article to the system.\n\n### **Request Headers**:\n\n- Authorization: Bearer\n    \n\n### **Request Body (Form-Data)**:\n\n| Key | Type | Description |\n| --- | --- | --- |\n| `title` | `text` | Title of the news article |\n| `content` | `text` | Content of the news article |\n| `category` | `text` | News category (e.g., Sports) |\n| `thumbnail` | `file` | Thumbnail image for the article |\n\n### **Steps**:\n\n1. Ensure you have the Bearer Token copied from the login response.\n2. Open the `News` folder and choose the `Add News` request or directly input the URL.\n3. Set the request method to `POST`.\n4. In the `Body` tab, select `form-data` and fill in the keys and values as described above.\n5. Attach a file for the `thumbnail` key (e.g., a sample image).\n    \n\n### **Response Example**:\n\n``` json\n{\n    \"message\": \"News created successfully\",\n    \"data\": {\n        \"id\": \"12345\",\n        \"title\": \"Breaking News\",\n        \"content\": \"This is the content of the news article.\",\n        \"category\": \"Sports\",\n        \"thumbnailURL\": \"https://example.com/thumbnail.jpg\",\n        \"author\": \"Author Name\",\n        \"createdAt\": \"2024-11-19T10:00:00Z\"\n    }\n}\n\n ```\n\n---\n\n### Notes:\n\n- **Automated Email**: Emails sent when adding a new journalist include their account details and a screenshot of the email for documentation purposes.\n- **Authorization**: Always include the Bearer Token in the `Authorization` header for secured endpoints.\n- **Testing**: For email verification, ensure you have SMTP configured (e.g., Gmail or Mailtrap).\n    \n\n## **Acknowledgment**\n\nThis API documentation is part of my final internship project. I would like to thank my mentors, team members, and \\[Organization Name\\] for their guidance and support throughout the development process.\n\nFeel free to reach out if you have any questions or need further clarification!",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "24413897"
+	},
+	"item": [
+		{
+			"name": "Berita",
+			"item": [
+				{
+					"name": "Update data",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful PUT request\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 201, 204]);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\": \"Add your name in the body\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/info?id=1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"info"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						},
+						"description": "\n### Update Info\n\nThis endpoint is used to modify an existing piece of data by sending a PUT request with the identifier included in the URL.\n\n#### Request Body\n- Type: JSON\n- Description: Payload should include the `name` field with the updated value.\n\nExample:\n```json\n{\n  \"name\": \"Updated name\"\n}\n```\n\n#### Response\nThe response for this request is a JSON schema, which defines the structure of the response data.\n\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Semua Berita",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "{{host}}news",
+							"host": [
+								"{{host}}news"
+							]
+						},
+						"description": "### GET /news\n\nThis endpoint retrieves news data.\n\n#### Response\n\nThe response for this request is a JSON object following the schema below:\n\n``` json\n{\n  \"type\": \"object\",\n  \"properties\": {\n    // Define the properties based on the actual response schema\n  }\n}\n\n ```"
+					},
+					"response": []
+				},
+				{
+					"name": "Berita by slug",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6ImQ0MjY5YTE3MzBlNTA3MTllNmIxNjA2ZTQyYzNhYjMyYjEyODA0NDkiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vcHJvamVjdC1pbnRlcm4td2lubmljb2RlIiwiYXVkIjoicHJvamVjdC1pbnRlcm4td2lubmljb2RlIiwiYXV0aF90aW1lIjoxNzI0MTIyODA3LCJ1c2VyX2lkIjoiMUhxNVNWaTNpYlpIbE5JMVVVS0pSZ2xyYUxpMSIsInN1YiI6IjFIcTVTVmkzaWJaSGxOSTFVVUtKUmdscmFMaTEiLCJpYXQiOjE3MjQxMjI4MDcsImV4cCI6MTcyNDEyNjQwNywiZW1haWwiOiJhZG1pbkBnbWFpbC5jb20iLCJlbWFpbF92ZXJpZmllZCI6ZmFsc2UsImZpcmViYXNlIjp7ImlkZW50aXRpZXMiOnsiZW1haWwiOlsiYWRtaW5AZ21haWwuY29tIl19LCJzaWduX2luX3Byb3ZpZGVyIjoicGFzc3dvcmQifX0.jNxLyy9L2WOkFuEhvnuTV091cxeoKw_SjUDG8JqIcasMBk6WWgZ-VgzvMAc_JlbIbecYPoUIanZeVWWa5X9jkUqOiyTEGFYwpWqs8zXhiDZBklJJNxHlFFrT1-thkHxAMSNv2qhzGC_NITBpkFhDJeErVsdE78DIOdTkw0GoZV-c_EnhpRoQR0mywKpUoQQzVUt1GmG3aG4X_5x8Ua-4ewNz4IhoFp-3MdG-rdK2PmSUKfXkPocZRL7fVwisS8qCKXGeq5EWdUWQI8raqAD_zh_A6M8SGWQPz1dU0EFc7DTfY8xiQCS0hCiChg4m1bg2ZHIGfkK-QFNqgfTcBggEoQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}news/sudah-berhasil-posting-berita",
+							"host": [
+								"{{host}}news"
+							],
+							"path": [
+								"sudah-berhasil-posting-berita"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "W8N79oulfmEoxIhJKeps",
+									"disabled": true
+								}
+							]
+						},
+						"description": "This endpoint makes an HTTP GET request to retrieve the details of a news article that has been successfully posted. The request does not contain a request body, as it is a simple GET request to fetch information.\n\nThe response will include the details of the posted news article, such as the title, content, author, publication date, and any other relevant information. The response body will provide the necessary details about the successfully posted news article."
+					},
+					"response": []
+				},
+				{
+					"name": "Berita by category",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6ImQ0MjY5YTE3MzBlNTA3MTllNmIxNjA2ZTQyYzNhYjMyYjEyODA0NDkiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vcHJvamVjdC1pbnRlcm4td2lubmljb2RlIiwiYXVkIjoicHJvamVjdC1pbnRlcm4td2lubmljb2RlIiwiYXV0aF90aW1lIjoxNzI0MTIyODA3LCJ1c2VyX2lkIjoiMUhxNVNWaTNpYlpIbE5JMVVVS0pSZ2xyYUxpMSIsInN1YiI6IjFIcTVTVmkzaWJaSGxOSTFVVUtKUmdscmFMaTEiLCJpYXQiOjE3MjQxMjI4MDcsImV4cCI6MTcyNDEyNjQwNywiZW1haWwiOiJhZG1pbkBnbWFpbC5jb20iLCJlbWFpbF92ZXJpZmllZCI6ZmFsc2UsImZpcmViYXNlIjp7ImlkZW50aXRpZXMiOnsiZW1haWwiOlsiYWRtaW5AZ21haWwuY29tIl19LCJzaWduX2luX3Byb3ZpZGVyIjoicGFzc3dvcmQifX0.jNxLyy9L2WOkFuEhvnuTV091cxeoKw_SjUDG8JqIcasMBk6WWgZ-VgzvMAc_JlbIbecYPoUIanZeVWWa5X9jkUqOiyTEGFYwpWqs8zXhiDZBklJJNxHlFFrT1-thkHxAMSNv2qhzGC_NITBpkFhDJeErVsdE78DIOdTkw0GoZV-c_EnhpRoQR0mywKpUoQQzVUt1GmG3aG4X_5x8Ua-4ewNz4IhoFp-3MdG-rdK2PmSUKfXkPocZRL7fVwisS8qCKXGeq5EWdUWQI8raqAD_zh_A6M8SGWQPz1dU0EFc7DTfY8xiQCS0hCiChg4m1bg2ZHIGfkK-QFNqgfTcBggEoQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}news/category/Tes kedua",
+							"host": [
+								"{{host}}news"
+							],
+							"path": [
+								"category",
+								"Tes kedua"
+							],
+							"query": [
+								{
+									"key": "category",
+									"value": "Tes kedua",
+									"disabled": true
+								}
+							]
+						},
+						"description": "This endpoint makes an HTTP GET request to retrieve news articles from the \"Tes kedua\" category. The request does not include a request body as it is a GET request, and the response will contain the news articles from the specified category."
+					},
+					"response": []
+				},
+				{
+					"name": "Edit Berita",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6ImQ0MjY5YTE3MzBlNTA3MTllNmIxNjA2ZTQyYzNhYjMyYjEyODA0NDkiLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiSm9obiBEb2UiLCJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vcHJvamVjdC1pbnRlcm4td2lubmljb2RlIiwiYXVkIjoicHJvamVjdC1pbnRlcm4td2lubmljb2RlIiwiYXV0aF90aW1lIjoxNzI0MTQzODA3LCJ1c2VyX2lkIjoiTjR3alRXcFdzcGNvRUFHVmpnbXcwMmwxNDMxMiIsInN1YiI6Ik40d2pUV3BXc3Bjb0VBR1ZqZ213MDJsMTQzMTIiLCJpYXQiOjE3MjQxNDM4MDcsImV4cCI6MTcyNDE0NzQwNywiZW1haWwiOiJlbWFpbEBlbWFpbC5jb20iLCJlbWFpbF92ZXJpZmllZCI6ZmFsc2UsInBob25lX251bWJlciI6Iis2Mjg3NjYzNzgzNiIsImZpcmViYXNlIjp7ImlkZW50aXRpZXMiOnsiZW1haWwiOlsiZW1haWxAZW1haWwuY29tIl0sInBob25lIjpbIis2Mjg3NjYzNzgzNiJdfSwic2lnbl9pbl9wcm92aWRlciI6InBhc3N3b3JkIn19.ovOH2JnoMb6kVMCxYNhayAgSQeQ11qC1WeqD-4tGTPkvybZqm6PZa7b1AzpxC5CLLBFRGgGJEMs0kPRWSbDOTfcfdF2mSgAe6UJ_3SqITKPDexEY9L8ifYi7n-1KmlwQcwG0nAbhTA1RubzQJEKwXYvgvnm8-mHLUnec_pwm-MdHluJIvZIhrxSNjn3_winw5KDcg9i80_VM_cGNSP0siS8aPj0xwAFdDAPmSKY2kFNaZk7mfTL1A18UA4OaHqJhbRod7W9B25To1R4tuhDRZIldIVYfXHJyB5POY6YfwP0aRvPPIWbeOzAac6bdZGaTBUP7rerZuGh6K_ydveS3Jg",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"Berita Terbaru\",\n    \"content\": \"Isi berita terbaru Edit Lagi\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}news/W8N79oulfmEoxIhJKeps",
+							"host": [
+								"{{host}}news"
+							],
+							"path": [
+								"W8N79oulfmEoxIhJKeps"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "W8N79oulfmEoxIhJKeps",
+									"disabled": true
+								}
+							]
+						},
+						"description": "\n### Update News\n\nThis endpoint is used to update a specific news item.\n\n#### Request Body\n- title (string, required): The updated title of the news.\n- content (string, required): The updated content of the news.\n\n#### Response\nThe response for this request follows the JSON schema below:\n\n```json\n{\n    \"type\": \"object\",\n    \"properties\": {\n        \"status\": {\n            \"type\": \"string\"\n        },\n        \"message\": {\n            \"type\": \"string\"\n        },\n        \"data\": {\n            \"type\": \"object\",\n            \"properties\": {\n                \"id\": {\n                    \"type\": \"string\"\n                },\n                \"title\": {\n                    \"type\": \"string\"\n                },\n                \"content\": {\n                    \"type\": \"string\"\n                },\n                \"updatedAt\": {\n                    \"type\": \"string\",\n                    \"format\": \"date-time\"\n                }\n            }\n        }\n    }\n}\n```\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Hapus Berita",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6ImQ0MjY5YTE3MzBlNTA3MTllNmIxNjA2ZTQyYzNhYjMyYjEyODA0NDkiLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiSm9obiBEb2UiLCJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vcHJvamVjdC1pbnRlcm4td2lubmljb2RlIiwiYXVkIjoicHJvamVjdC1pbnRlcm4td2lubmljb2RlIiwiYXV0aF90aW1lIjoxNzI0MTQzODA3LCJ1c2VyX2lkIjoiTjR3alRXcFdzcGNvRUFHVmpnbXcwMmwxNDMxMiIsInN1YiI6Ik40d2pUV3BXc3Bjb0VBR1ZqZ213MDJsMTQzMTIiLCJpYXQiOjE3MjQxNDM4MDcsImV4cCI6MTcyNDE0NzQwNywiZW1haWwiOiJlbWFpbEBlbWFpbC5jb20iLCJlbWFpbF92ZXJpZmllZCI6ZmFsc2UsInBob25lX251bWJlciI6Iis2Mjg3NjYzNzgzNiIsImZpcmViYXNlIjp7ImlkZW50aXRpZXMiOnsiZW1haWwiOlsiZW1haWxAZW1haWwuY29tIl0sInBob25lIjpbIis2Mjg3NjYzNzgzNiJdfSwic2lnbl9pbl9wcm92aWRlciI6InBhc3N3b3JkIn19.ovOH2JnoMb6kVMCxYNhayAgSQeQ11qC1WeqD-4tGTPkvybZqm6PZa7b1AzpxC5CLLBFRGgGJEMs0kPRWSbDOTfcfdF2mSgAe6UJ_3SqITKPDexEY9L8ifYi7n-1KmlwQcwG0nAbhTA1RubzQJEKwXYvgvnm8-mHLUnec_pwm-MdHluJIvZIhrxSNjn3_winw5KDcg9i80_VM_cGNSP0siS8aPj0xwAFdDAPmSKY2kFNaZk7mfTL1A18UA4OaHqJhbRod7W9B25To1R4tuhDRZIldIVYfXHJyB5POY6YfwP0aRvPPIWbeOzAac6bdZGaTBUP7rerZuGh6K_ydveS3Jg",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"Berita Terbaru\",\n    \"content\": \"Isi berita terbaru Edit Lagi\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}news/aD9Q6p9b6hLKTqvdK8BX",
+							"host": [
+								"{{host}}news"
+							],
+							"path": [
+								"aD9Q6p9b6hLKTqvdK8BX"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "W8N79oulfmEoxIhJKeps",
+									"disabled": true
+								}
+							]
+						},
+						"description": "### Delete News\n\nThis endpoint is used to delete a specific news item.\n\n#### Request Body\n\n- title (string, required): The title of the news item to be deleted.\n- content (string, required): The content of the news item to be deleted.\n    \n\n#### Response\n\nThe response for this request is a JSON schema. The schema includes the properties and data types of the response object, which will be returned upon successful deletion of the news item."
+					},
+					"response": []
+				},
+				{
+					"name": "Tambah berita",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful POST request\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6IjZjYzNmY2I2NDAzMjc2MGVlYjljMjZmNzdkNDA3YTY5NGM1MmIwZTMiLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiU29uIiwiaXNzIjoiaHR0cHM6Ly9zZWN1cmV0b2tlbi5nb29nbGUuY29tL3Byb2plY3QtaW50ZXJuLXdpbm5pY29kZSIsImF1ZCI6InByb2plY3QtaW50ZXJuLXdpbm5pY29kZSIsImF1dGhfdGltZSI6MTcyNzQwODg5MCwidXNlcl9pZCI6IkV3TWNCN0ZqcWVXeGRYcktjc3JLMnpwVWtlNTMiLCJzdWIiOiJFd01jQjdGanFlV3hkWHJLY3NySzJ6cFVrZTUzIiwiaWF0IjoxNzI3NDA4ODkwLCJleHAiOjE3Mjc0MTI0OTAsImVtYWlsIjoic29uQGVtYWlsLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwicGhvbmVfbnVtYmVyIjoiKzYyODc2NjM3ODM2OTkiLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbInNvbkBlbWFpbC5jb20iXSwicGhvbmUiOlsiKzYyODc2NjM3ODM2OTkiXX0sInNpZ25faW5fcHJvdmlkZXIiOiJwYXNzd29yZCJ9fQ.Ura8eSRR4Cpti4mRdQ045HD72Ksm5YTCK9SbaAfhfzQw43X1_iXFyVwh06OhmRGN7qQV5TcP0FZFWycv_Y6pWNGzPOZ4TwcT0JPOVkTfVSoNblkavmoltgbT8E1fySamaeixZA2jV3EBVFHP8DIr-ojd1jwH55jWb-Rb6uMeu35A5PLe8PDu5rDn0o8T22ZPnDfs7hb9SNzjveaRavNOqLur_ZLl5ptmZnxOgW_E_i1WAziOphNzMSo1Tdl4QUCKwfgGOetsWkdL5OvKDi89vJ9_8DD_RHDAgpdP3y5pkDQ36C3HGfzyAK4k7bimfDFH-yarFf30nqZvZSmBcbWS3g",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "",
+								"value": "",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "title",
+									"value": "tes dari postman",
+									"type": "text"
+								},
+								{
+									"key": "content",
+									"value": " <p>tes pertama</p>",
+									"type": "text"
+								},
+								{
+									"key": "category",
+									"value": "Tes kedua",
+									"type": "text"
+								},
+								{
+									"key": "thumbnail",
+									"type": "file",
+									"src": "/home/son/Pictures/Screenshots/Screenshot from 2024-09-20 19-27-20.png"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{host}}news",
+							"host": [
+								"{{host}}news"
+							]
+						},
+						"description": "\n### POST /news\n\nThis endpoint allows the user to submit news data to the API.\n\n#### Request Body\n- `title` (text): A brief title for the news article.\n- `content` (text): The content or body of the news article.\n- `category` (text): The category to which the news article belongs.\n- `thumbnail` (file): An optional thumbnail image for the news article.\n\n#### Response\nThe response schema for this request is as follows:\n```json\n{\n  \"type\": \"object\",\n  \"properties\": {\n    \"status\": {\n      \"type\": \"string\"\n    },\n    \"message\": {\n      \"type\": \"string\"\n    },\n    \"data\": {\n      \"type\": \"object\",\n      \"properties\": {\n        \"id\": {\n          \"type\": \"string\"\n        },\n        \"title\": {\n          \"type\": \"string\"\n        },\n        \"content\": {\n          \"type\": \"string\"\n        },\n        \"category\": {\n          \"type\": \"string\"\n        },\n        \"thumbnail_url\": {\n          \"type\": \"string\"\n        }\n      }\n    }\n  }\n}\n```\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code.\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Edit Kategori",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6IjFlNTIxYmY1ZjdhNDAwOGMzYmQ3MjFmMzk2OTcwOWI1MzY0MzA5NjEiLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiU29uIiwiaXNzIjoiaHR0cHM6Ly9zZWN1cmV0b2tlbi5nb29nbGUuY29tL3Byb2plY3QtaW50ZXJuLXdpbm5pY29kZSIsImF1ZCI6InByb2plY3QtaW50ZXJuLXdpbm5pY29kZSIsImF1dGhfdGltZSI6MTczMTk4MzA0MywidXNlcl9pZCI6IkV3TWNCN0ZqcWVXeGRYcktjc3JLMnpwVWtlNTMiLCJzdWIiOiJFd01jQjdGanFlV3hkWHJLY3NySzJ6cFVrZTUzIiwiaWF0IjoxNzMxOTgzMDQzLCJleHAiOjE3MzE5ODY2NDMsImVtYWlsIjoic29uQGVtYWlsLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwicGhvbmVfbnVtYmVyIjoiKzYyODc2NjM3ODM2OTkiLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbInNvbkBlbWFpbC5jb20iXSwicGhvbmUiOlsiKzYyODc2NjM3ODM2OTkiXX0sInNpZ25faW5fcHJvdmlkZXIiOiJwYXNzd29yZCJ9fQ.KUczgDr-ixfWqWSbVGo3_v-Fwl7OeMXPBrr6ZGl3nYMF5SLzyc9UXf0YGIXj1hZFW5Ogqh1t9vWSo9clzFNQfngICX9EyxKtxyJiPEQTRE1yH8ZzCeIN9XtHSblsMfx2Wp01hAaRcJa8Fa49f23d66EqSLt67GpUWVkpjhUYUMmBh1KrjVzzu1jlOB9AjwJb50Hz5DfI9HaZ9i9fLnJR-1hYJzRw3jdEdP3UH8MlrMFqkdEjQr3UsH2taYPKWvj2eP0VIcQqqkvtmixNsfo7TfQKauY0IAOvGuKwcMcue2BQ6NOSQAb7z553MByy77y4zFWUx2oK1yC_5a-7UsLcrA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"oldCategory\": \"baru\",\n    \"newCategory\": \"Lifestyle\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}news/category",
+							"host": [
+								"{{host}}news"
+							],
+							"path": [
+								"category"
+							]
+						},
+						"description": "# Update News Category\n\nThis endpoint is used to update the category of news.\n\n## Request\n\n- Method: PATCH\n- URL: `{{host}}news/category`\n- Headers:\n    - Content-Type: application/json\n- Body:\n    - oldCategory (string, required): The current category of the news.\n    - newCategory (string, required): The new category to be assigned to the news.\n\n## Response\n\nThe response for this request is a JSON object with the following schema:\n\n``` json\n{\n  \"type\": \"object\",\n  \"properties\": {\n    // Define the properties of the response JSON schema here\n  }\n}\n\n ```"
+					},
+					"response": []
+				},
+				{
+					"name": "Berita by Author",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}news/author/N4wjTWpWspcoEAGVjgmw02l14312",
+							"host": [
+								"{{host}}news"
+							],
+							"path": [
+								"author",
+								"N4wjTWpWspcoEAGVjgmw02l14312"
+							]
+						},
+						"description": "### Retrieve News by Author ID\n\nThis endpoint makes an HTTP GET request to retrieve news articles authored by a specific author.\n\n#### Request\n\nThe request does not require a request body. The endpoint URL should include the author ID in the path parameter.\n\n- Path parameter:\n    - authorId (string, required): The unique ID of the author whose news articles are to be retrieved.\n\nExample:\n\n```\n{{host}}/news/author/N4wjTWpWspcoEAGVjgmw02l14312\n\n ```\n\n#### Response\n\nThe response will be a JSON object containing the news articles authored by the specified author. Below is a JSON schema representing the structure of the response:\n\n``` json\n{\n  \"type\": \"object\",\n  \"properties\": {\n    \"articles\": {\n      \"type\": \"array\",\n      \"items\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"title\": { \"type\": \"string\" },\n          \"description\": { \"type\": \"string\" },\n          \"publishedAt\": { \"type\": \"string\", \"format\": \"date-time\" }\n          // Add more properties as per the actual response\n        }\n      }\n    }\n  }\n}\n\n ```"
+					},
+					"response": []
+				},
+				{
+					"name": "Cari Berita (Judul)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}news/search?query=tes",
+							"host": [
+								"{{host}}news"
+							],
+							"path": [
+								"search"
+							],
+							"query": [
+								{
+									"key": "query",
+									"value": "tes"
+								}
+							]
+						},
+						"description": "### News Search\n\nThis endpoint makes an HTTP GET request to search for news based on the provided query parameter.\n\n#### Response\n\nThe response of this request is a JSON schema representing the structure of the news search results. The schema will outline the format of the data returned, including the keys and their respective value types.\n\nExample response schema:\n\n``` json\n{\n  \"type\": \"object\",\n  \"properties\": {\n    \"news\": {\n      \"type\": \"array\",\n      \"items\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"title\": {\n            \"type\": \"string\"\n          },\n          \"description\": {\n            \"type\": \"string\"\n          },\n          \"source\": {\n            \"type\": \"string\"\n          },\n          \"url\": {\n            \"type\": \"string\"\n          },\n          \"publishedAt\": {\n            \"type\": \"string\",\n            \"format\": \"date-time\"\n          }\n        }\n      }\n    }\n  }\n}\n\n ```"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful POST request\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"son@gmail.com\",\n    \"password\": \"12345678\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}auth/login",
+							"host": [
+								"{{host}}auth"
+							],
+							"path": [
+								"login"
+							]
+						},
+						"description": "### Auth Login\n\nThis endpoint is used to authenticate a user by submitting their email and password.\n\n#### Request Body\n\n- Type: JSON\n    - email (string): The email of the user.\n    - password (string): The password of the user.\n\n#### Response\n\nThe response of this request is a JSON object representing the authentication result. You can document the response as a JSON schema to define the structure of the response data.\n\n#### Response JSON Schema\n\n``` json\n{\n  \"type\": \"object\",\n  \"properties\": {\n    \"token\": {\n      \"type\": \"string\"\n    },\n    \"user\": {\n      \"type\": \"object\",\n      \"properties\": {\n        \"id\": {\n          \"type\": \"string\"\n        },\n        \"name\": {\n          \"type\": \"string\"\n        },\n        \"email\": {\n          \"type\": \"string\"\n        }\n      }\n    }\n  }\n}\n\n ```\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
+					},
+					"response": []
+				},
+				{
+					"name": "Logout",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful POST request\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6ImQ0MjY5YTE3MzBlNTA3MTllNmIxNjA2ZTQyYzNhYjMyYjEyODA0NDkiLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiSm9obiBEb2UiLCJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vcHJvamVjdC1pbnRlcm4td2lubmljb2RlIiwiYXVkIjoicHJvamVjdC1pbnRlcm4td2lubmljb2RlIiwiYXV0aF90aW1lIjoxNzI0MTI1NDA4LCJ1c2VyX2lkIjoiTjR3alRXcFdzcGNvRUFHVmpnbXcwMmwxNDMxMiIsInN1YiI6Ik40d2pUV3BXc3Bjb0VBR1ZqZ213MDJsMTQzMTIiLCJpYXQiOjE3MjQxMjU0MDgsImV4cCI6MTcyNDEyOTAwOCwiZW1haWwiOiJlbWFpbEBlbWFpbC5jb20iLCJlbWFpbF92ZXJpZmllZCI6ZmFsc2UsInBob25lX251bWJlciI6Iis2Mjg3NjYzNzgzNiIsImZpcmViYXNlIjp7ImlkZW50aXRpZXMiOnsiZW1haWwiOlsiZW1haWxAZW1haWwuY29tIl0sInBob25lIjpbIis2Mjg3NjYzNzgzNiJdfSwic2lnbl9pbl9wcm92aWRlciI6InBhc3N3b3JkIn19.ua-If0I7AJR5yT-A1XNcJHiuweU1rDL9J6So2LQjnDiwxvZeVksNsij0s2j6icwEE2rWyq1rBxfSJnKjctYeMvh5icMPXuPxjbgnOafDnoDFjIw-8glvR_ubVLQXahSmQW5tny0p9YJM-o09BiAqX3aWVnT8mcHbjZfzMV4YdIceYDzAUYs7OGFsqTQ2BItprLJ-vap86S50aUuNyTmQebfZwT0bQWO3elkeOPZ2wYdD-aYFwke9PoBDgNvDWKz_h3_q7OOoMw-bKlI0x4XhUghubQZlao3N07-9old1qw7FeNBCCqtKd2p8kViuX7dOsUK1Z8shmavzNPdzIfDwaQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"email@email.com\",\n    \"password\": \"12345678\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}auth/logout",
+							"host": [
+								"{{host}}auth"
+							],
+							"path": [
+								"logout"
+							]
+						},
+						"description": "### Request\n\nThis is a POST request to the `{{host}}auth/logout` endpoint to log out a user. The request body should be in JSON format and includes the user's email and password for authentication.\n\n### Request Body\n\n- email (string, required): The email of the user.\n- password (string, required): The password of the user.\n    \n\n### Response\n\nThe response of this request is a JSON object representing the result of the logout operation.\n\n### Response Body (JSON Schema)\n\n``` json\n{\n  \"type\": \"object\",\n  \"properties\": {\n    \"message\": {\n      \"type\": \"string\"\n    }\n  }\n}\n\n ```\n\nA successful response will have a status code of `200 OK` or `201 Created`."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Jurnalis",
+			"item": [
+				{
+					"name": "Tambah jurnalis",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful POST request\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6IjkyODg2OGRjNDRlYTZhOThjODhiMzkzZDM2NDQ1MTM2NWViYjMwZDgiLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiU29uIGNvYmEiLCJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vcHJvamVjdC1pbnRlcm4td2lubmljb2RlIiwiYXVkIjoicHJvamVjdC1pbnRlcm4td2lubmljb2RlIiwiYXV0aF90aW1lIjoxNzMyMjAzMDQ5LCJ1c2VyX2lkIjoiVTJTQjBBQlREM1VnbFJGMUtIVjc1cHk2b2VLMiIsInN1YiI6IlUyU0IwQUJURDNVZ2xSRjFLSFY3NXB5Nm9lSzIiLCJpYXQiOjE3MzIyMDMwNDksImV4cCI6MTczMjIwNjY0OSwiZW1haWwiOiJzb25AZ21haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJwaG9uZV9udW1iZXIiOiIrNjI4NzY2Mzc4MzYiLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbInNvbkBnbWFpbC5jb20iXSwicGhvbmUiOlsiKzYyODc2NjM3ODM2Il19LCJzaWduX2luX3Byb3ZpZGVyIjoicGFzc3dvcmQifX0.K1fPds2_OMXuZJT0JfuyIWonnibdgib0tfseNuHfGIeF9GuBfJhW592xm5Hwvo5fjW1TTx_E73UrI97szftRkIsvkAI1tqfINAQPRwwvE4Dj3YO2QaABZAynyn1KPATKR2fSnG8lufFYe-0VNyDJwVno6kf3fPeY8G32KaIkCGBctpGrgR5vSyMROqM3Ltaq6xtqr0w1Y-hRgwAKsHBoUYtMc2qmJ8_wKZuR7cng9OTV4vOGIOEghqz8NLcXT4BGwyl84q_lPdGTjYWaIE-TcimlSsrnAxbcbQmpOxdL7q3qoTWpU3mRdAUS8DmfJhfIy8y3Z5vZSMPFDlecQ6G2qg",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "title",
+								"value": "ee",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "content",
+								"value": "eee",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "",
+								"value": "",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"78alrescha@gmail.com\",\n    \"name\": \"Penulis\",\n    \"phone\": \"+628763048336\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}journalist/add",
+							"host": [
+								"{{host}}journalist"
+							],
+							"path": [
+								"add"
+							]
+						},
+						"description": "\n### Add Journalist\nThis endpoint allows you to add a new journalist to the system.\n\n#### Request Body\n- email (string, required): The email address of the journalist.\n- name (string, required): The name of the journalist.\n- phone (string, required): The phone number of the journalist.\n\nExample:\n```json\n{\n  \"email\": \"78alrescha@gmail.com\",\n  \"name\": \"Penulis\",\n  \"phone\": \"+628763048336\"\n}\n```\n\n#### Response\nA successful request returns a `200 OK` or `201 Created` response code.\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Semua jurnalis",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful POST request\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6IjkyODg2OGRjNDRlYTZhOThjODhiMzkzZDM2NDQ1MTM2NWViYjMwZDgiLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiU29uIGNvYmEiLCJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vcHJvamVjdC1pbnRlcm4td2lubmljb2RlIiwiYXVkIjoicHJvamVjdC1pbnRlcm4td2lubmljb2RlIiwiYXV0aF90aW1lIjoxNzMyMTk4NTA5LCJ1c2VyX2lkIjoiVTJTQjBBQlREM1VnbFJGMUtIVjc1cHk2b2VLMiIsInN1YiI6IlUyU0IwQUJURDNVZ2xSRjFLSFY3NXB5Nm9lSzIiLCJpYXQiOjE3MzIxOTg1MDksImV4cCI6MTczMjIwMjEwOSwiZW1haWwiOiJzb25AZ21haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJwaG9uZV9udW1iZXIiOiIrNjI4NzY2Mzc4MzYiLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbInNvbkBnbWFpbC5jb20iXSwicGhvbmUiOlsiKzYyODc2NjM3ODM2Il19LCJzaWduX2luX3Byb3ZpZGVyIjoicGFzc3dvcmQifX0.MLDOuAk9_bdQo7HL3u0bYIE4vlW8KkTq9vSAOZQoVmgFkeUwuLnikMshZsbWIWmjinmO7mRXxmslDklfEmNAYOA9o1-xfHiaRsuyD4mlxThpR3L-6i3Qr6i4nH6WML9qk0T7cfBaK2zhDDI4T6EJEK4LJqabeY661iLceXBH_qXFuImCHhfw-ajh5hQQidyJ5wqepvWHekDWyWZe4ELxfDVsfcqPccYxPuvOilffK2yOUfFkRuVu1uyERx6hlCGTxl-fKB7MH5suZUaq6cl6611aagloZ8KUtHYS-jqSi7UkpGK9zX9DqvtMbHrrYPqpw3P59nrkZ3jWj6jL7vOGoQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"John Doe\",\n    \"phone\": \"+62876637836\",\n    \"email\": \"email@email.com\",\n    \"password\": \"12345678\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}journalist",
+							"host": [
+								"{{host}}journalist"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": null,
+									"disabled": true
+								}
+							]
+						},
+						"description": "\n### GET /journalist\n\nThis is a GET request to retrieve journalist data from the API.\n\n#### Request\n\nNo request body is required for this request.\n\n#### Response\n\nThe response will be a JSON object with the following schema:\n\n```json\n{\n  \"type\": \"object\",\n  \"properties\": {\n    \"journalistId\": {\n      \"type\": \"string\"\n    },\n    \"name\": {\n      \"type\": \"string\"\n    },\n    \"phone\": {\n      \"type\": \"string\"\n    },\n    \"email\": {\n      \"type\": \"string\"\n    }\n  }\n}\n```\n"
+					},
+					"response": []
+				},
+				{
+					"name": "jurnalis by id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful POST request\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6ImQ0MjY5YTE3MzBlNTA3MTllNmIxNjA2ZTQyYzNhYjMyYjEyODA0NDkiLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiSm9obiBEb2UiLCJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vcHJvamVjdC1pbnRlcm4td2lubmljb2RlIiwiYXVkIjoicHJvamVjdC1pbnRlcm4td2lubmljb2RlIiwiYXV0aF90aW1lIjoxNzI0MTQ1NjMxLCJ1c2VyX2lkIjoiTjR3alRXcFdzcGNvRUFHVmpnbXcwMmwxNDMxMiIsInN1YiI6Ik40d2pUV3BXc3Bjb0VBR1ZqZ213MDJsMTQzMTIiLCJpYXQiOjE3MjQxNDU2MzEsImV4cCI6MTcyNDE0OTIzMSwiZW1haWwiOiJlbWFpbEBlbWFpbC5jb20iLCJlbWFpbF92ZXJpZmllZCI6ZmFsc2UsInBob25lX251bWJlciI6Iis2Mjg3NjYzNzgzNiIsImZpcmViYXNlIjp7ImlkZW50aXRpZXMiOnsiZW1haWwiOlsiZW1haWxAZW1haWwuY29tIl0sInBob25lIjpbIis2Mjg3NjYzNzgzNiJdfSwic2lnbl9pbl9wcm92aWRlciI6InBhc3N3b3JkIn19.T0a4zIoQS8tV06ihZ9z9AJdzj3YZverPNb20U-9WFy64QSCBo3GEzPcBGDibbk2NA8eRdTIOoWcYYXYLtGkdC2fjo4RFxJjP1pqnx6i_AQNW01JevsexbgD7bzs5OvA5uewfZHhpnhBZZcb0JAJSArH8DLN6roBainY5jhokYEpg-vn_axB5R6A5qMmqkoebJaX2Y8YcX5yM33fu38WfCnKpO8mzOIQqU9h4MHC_q4fvb5hA1lA22Nnq9gc-wZCSDnvNsHs0dWmNmtQ-kWa_v0NAQN4aiD6X__HIBkKyE0HxJ4murpBDqkab8otUrnXzZQCpo8t2ocB83p60h5P_8g",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "title",
+								"value": "ee",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "content",
+								"value": "eee",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "",
+								"value": "",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"John Doe\",\n    \"phone\": \"+62876637836\",\n    \"email\": \"email@email.com\",\n    \"password\": \"12345678\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}journalist/N4wjTWpWspcoEAGVjgmw02l14312",
+							"host": [
+								"{{host}}journalist"
+							],
+							"path": [
+								"N4wjTWpWspcoEAGVjgmw02l14312"
+							]
+						},
+						"description": "\n### GET journalist/N4wjTWpWspcoEAGVjgmw02l14312\n\nThis is a GET request to retrieve information about a specific journalist.\n\n#### Request\n\nThis request does not require a request body.\n\n#### Response\n\nThe response will be in JSON format and will include the following schema:\n\n```json\n{\n  \"type\": \"object\",\n  \"properties\": {\n    \"journalistId\": {\n      \"type\": \"string\"\n    },\n    \"name\": {\n      \"type\": \"string\"\n    },\n    \"phone\": {\n      \"type\": \"string\"\n    },\n    \"email\": {\n      \"type\": \"string\"\n    }\n  }\n}\n```\n"
+					},
+					"response": []
+				},
+				{
+					"name": "edit jurnalis",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful POST request\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6IjFlNTIxYmY1ZjdhNDAwOGMzYmQ3MjFmMzk2OTcwOWI1MzY0MzA5NjEiLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiU29uIGNvYmEiLCJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vcHJvamVjdC1pbnRlcm4td2lubmljb2RlIiwiYXVkIjoicHJvamVjdC1pbnRlcm4td2lubmljb2RlIiwiYXV0aF90aW1lIjoxNzMyMTA1MTkzLCJ1c2VyX2lkIjoiVTJTQjBBQlREM1VnbFJGMUtIVjc1cHk2b2VLMiIsInN1YiI6IlUyU0IwQUJURDNVZ2xSRjFLSFY3NXB5Nm9lSzIiLCJpYXQiOjE3MzIxMDUxOTMsImV4cCI6MTczMjEwODc5MywiZW1haWwiOiJzb25AZ21haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJwaG9uZV9udW1iZXIiOiIrNjI4NzY2Mzc4MzYiLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbInNvbkBnbWFpbC5jb20iXSwicGhvbmUiOlsiKzYyODc2NjM3ODM2Il19LCJzaWduX2luX3Byb3ZpZGVyIjoicGFzc3dvcmQifX0.EoKlXO4KPpsJVKBwIwrbE2anibLn6504JEpzKmRGBq5uav8mF1fHG2XjQW3mICv4KAs8O5AOh3ZzeTYckmpXQ3_9goIdJE_5xrbyThmU77_eOpoz-HP-kMqFlLvtgpxxoCBlAtvO7o_VY4KVE7DlketCD8QfQzoh1pCu12mNW3JQPccZw7PgkeOOpz61UP5ek7Ln0cL9mW2f9h7-313t_PuB6rDuiYmPEb67BmCsNly6PZdXyjHSJGzHlz1AMOwJCCdeFIKu4G4GsrBfFaGgtRhyN3nd-jLV1ICYqRgg4glttxjMnq6B885TjN6ZfK1tJgRhTpOFS-JUpD1bTYcjgA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "phone",
+									"value": "+62876637836",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "son@gmail.com",
+									"type": "text"
+								},
+								{
+									"key": "name",
+									"value": "Son coba",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "son@gmail.com",
+									"type": "text"
+								},
+								{
+									"key": "profilePicture",
+									"type": "file",
+									"src": "/home/son/Pictures/icon/skill-icons--supabase-light.png"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{host}}journalist/U2SB0ABTD3UglRF1KHV75py6oeK2",
+							"host": [
+								"{{host}}journalist"
+							],
+							"path": [
+								"U2SB0ABTD3UglRF1KHV75py6oeK2"
+							]
+						},
+						"description": "\n### Update Journalist Information\n\nThis endpoint allows updating journalist information by making an HTTP PUT request to `{{host}}journalist/U2SB0ABTD3UglRF1KHV75py6oeK2`.\n\n#### Request Body\nThe request body should be of form-data type and include the following parameters:\n\n- `phone` (text): The phone number of the journalist.\n- `email` (text): The email address of the journalist.\n- `name` (text): The name of the journalist.\n- `password` (text): The password for the journalist's account.\n- `profilePicture` (file): The profile picture of the journalist.\n\n#### Response\nThe response of this request is a JSON object representing the updated journalist information. Below is a JSON schema representing the response:\n\n```json\n{\n  \"type\": \"object\",\n  \"properties\": {\n    \"id\": {\n      \"type\": \"string\"\n    },\n    \"name\": {\n      \"type\": \"string\"\n    },\n    \"email\": {\n      \"type\": \"string\"\n    },\n    \"phone\": {\n      \"type\": \"string\"\n    },\n    \"profilePicture\": {\n      \"type\": \"string\"\n    }\n  }\n}\n```\n\nA successful request returns a `200 OK` response code.\n\n"
+					},
+					"response": []
+				},
+				{
+					"name": "hapus jurnalis",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful POST request\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6IjkyODg2OGRjNDRlYTZhOThjODhiMzkzZDM2NDQ1MTM2NWViYjMwZDgiLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiU29uIGNvYmEiLCJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vcHJvamVjdC1pbnRlcm4td2lubmljb2RlIiwiYXVkIjoicHJvamVjdC1pbnRlcm4td2lubmljb2RlIiwiYXV0aF90aW1lIjoxNzMyMTk4NTA5LCJ1c2VyX2lkIjoiVTJTQjBBQlREM1VnbFJGMUtIVjc1cHk2b2VLMiIsInN1YiI6IlUyU0IwQUJURDNVZ2xSRjFLSFY3NXB5Nm9lSzIiLCJpYXQiOjE3MzIxOTg1MDksImV4cCI6MTczMjIwMjEwOSwiZW1haWwiOiJzb25AZ21haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJwaG9uZV9udW1iZXIiOiIrNjI4NzY2Mzc4MzYiLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbInNvbkBnbWFpbC5jb20iXSwicGhvbmUiOlsiKzYyODc2NjM3ODM2Il19LCJzaWduX2luX3Byb3ZpZGVyIjoicGFzc3dvcmQifX0.MLDOuAk9_bdQo7HL3u0bYIE4vlW8KkTq9vSAOZQoVmgFkeUwuLnikMshZsbWIWmjinmO7mRXxmslDklfEmNAYOA9o1-xfHiaRsuyD4mlxThpR3L-6i3Qr6i4nH6WML9qk0T7cfBaK2zhDDI4T6EJEK4LJqabeY661iLceXBH_qXFuImCHhfw-ajh5hQQidyJ5wqepvWHekDWyWZe4ELxfDVsfcqPccYxPuvOilffK2yOUfFkRuVu1uyERx6hlCGTxl-fKB7MH5suZUaq6cl6611aagloZ8KUtHYS-jqSi7UkpGK9zX9DqvtMbHrrYPqpw3P59nrkZ3jWj6jL7vOGoQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "title",
+								"value": "ee",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "content",
+								"value": "eee",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "",
+								"value": "",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "{{host}}journalist/N4wjTWpWspcoEAGVjgmw02l14312",
+							"host": [
+								"{{host}}journalist"
+							],
+							"path": [
+								"N4wjTWpWspcoEAGVjgmw02l14312"
+							]
+						},
+						"description": "\n### Request\nThis is an HTTP DELETE request to delete a specific journalist resource identified by the ID \"N4wjTWpWspcoEAGVjgmw02l14312\".\n\n### Request Body\nThis request does not contain a request body.\n\n### Response\nThe response of this request is a JSON schema representing the structure of the response body.\n"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "User",
+			"item": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "id",
+			"value": "1"
+		},
+		{
+			"key": "base_url",
+			"value": "https://postman-rest-api-learner.glitch.me/"
+		}
+	]
+}
