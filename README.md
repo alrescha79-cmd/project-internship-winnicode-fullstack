@@ -1,6 +1,15 @@
 
 # Portal Berita Fullstack
 
+> [!IMPORTANT]  
+> Jangan langsung Clone dari branch utama.
+
+> [!CAUTION]
+> Jika Anda langsung clone dari branch utama maka folder akan kosong.
+
+> [!TIP]
+> Anda bisa melakukan clone satu-satu per branch, seperti dokumentasi [dibawah ini](#installation).
+
 ### Proyek akhir untuk Magang Mandiri di [Winnicode Garuda Teknologi](https://www.winnicode.com) pada departemen Web Developer
 
 ##
@@ -32,8 +41,6 @@ Proyek ini merupakan sebuah portal berita fullstack yang dibangun menggunakan te
 [Express](https://expressjs.com/),
 [Firebase](https://firebase.google.com/)
 
-## Installation
-
 ## Prasyarat
 
 - Node.js dan npm (atau yarn) telah terinstal
@@ -47,6 +54,8 @@ Proyek ini merupakan sebuah portal berita fullstack yang dibangun menggunakan te
 - Aktifkan `Firestore Database` dan `Authentication`.
 - Unduh `google-services.json` dan simpan di direktori `backend` dan `dashboard`.
 - Sesuaikan nilai `API_KEY`, `AUTH_DOMAIN`, dan lainnya pada file `.env` di masing-masing direktori dengan nilai yang sesuai dari Firebase project Anda.
+
+## Installation
 
 ### Buat Folder baru **portal-berita**
 
