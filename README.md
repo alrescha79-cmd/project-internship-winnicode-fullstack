@@ -6,37 +6,54 @@ template from [CoreUI for React](https://coreui.io/react/docs/templates/installa
 
 ## Installation
 
-Buat Folder baru **dashbord**
+## Setup Firebase
 
-```bash
-  mkdir dashboard
-```
+- Buat project baru di [Firebase Console](https://console.firebase.google.com/).
+- Tambahkan aplikasi web baru.
+- Aktifkan `Firestore Database` dan `Authentication`.
+- Unduh `google-services.json` dan simpan di direktori `backend` dan `dashboard`.
+- Sesuaikan nilai `API_KEY`, `AUTH_DOMAIN`, dan lainnya pada file `.env` di masing-masing direktori dengan nilai yang sesuai dari Firebase project Anda.
 
-Install dashboard menggunakan npm
+### Clone Repository dari branch dashboard
 
 ```bash
   git clone -b dashboard https://github.com/alrescha79-cmd/project-internship-winnicode-fullstack.git dashboard
 ```
 
-Arahkan ke folder dashboard
+### Arahkan ke folder dashboard
 
 ```bash
   cd dashboard
 ```
 
-Install semua dependensi
+### Install semua dependensi
 
 ```bash
   npm i
 ```
 
-Jalankan dashboard
+### Tambahkan `.env` di root folder dashboard
+
+Sesuaikan dengan key dari `Firebase`
+
+```env
+VITE_API_KEY=**********
+VITE_AUTH_DOMAIN==**********
+VITE_PROJECT_ID==**********
+VITE_STORAGE_BUCKET==**********
+VITE_MESSAGING_SENDER_ID==**********
+VITE_APP_ID==**********
+
+VITE_API=http://localhost:3000 # ganti sesuai dengan url backend
+```
+
+### Jalankan dashboard
 
 ```bash
   npm start
 ```
 
-Navigate to [http://localhost:3000](http://localhost:3000). The app will automatically reload if you change any of the source files.
+Secara default, Server akan berjalan pada <http://localhost:5000>
 
 ### Build
 
