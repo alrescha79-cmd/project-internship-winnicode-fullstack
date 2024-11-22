@@ -1,5 +1,5 @@
 
-# Web Portal Berita Menggunakan Astro Js, React Js, Express Js dan Firebase
+# Web Berita utama
 
 Proyek akhir untuk Magang Mandiri di [Winnicode Garuda Teknologi](https://www.winnicode.com/beranda) pada departemen Web Developer
 
@@ -11,35 +11,39 @@ Proyek akhir untuk Magang Mandiri di [Winnicode Garuda Teknologi](https://www.wi
 
 ## Installation
 
-Buat Folder baru **portal-berita**
-
-```bash
-  mkdir portal-berita
-```
-
-Install frontend menggunakan npm
+### Clone Repository dari branch frontend
 
 ```bash
   git clone -b frontend https://github.com/alrescha79-cmd/project-internship-winnicode-fullstack.git frontend
 ```
 
-Arahkan ke folder frontend
+### Arahkan ke folder frontend
 
 ```bash
   cd frontend
 ```
 
-Install semua dependensi
+### Install semua dependensi
 
 ```bash
   npm i
 ```
 
-Jalankan frontend
+### Tambahkan `.env` di root folder frontend
+
+
+```env
+HOST=<url-backend>
+LOCAL_HOST=http://localhost:3000
+```
+
+### Jalankan frontend
 
 ```bash
   npm start
 ```
+
+Secara default, Server akan berjalan pada <http://localhost:4321>
 
 ## Authors
 
