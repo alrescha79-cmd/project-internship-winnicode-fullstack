@@ -1,6 +1,9 @@
 
 # Portal Berita Fullstack
 
+> [!NOTE]  
+> Repositori ini memili beberapa branch.
+
 > [!IMPORTANT]  
 > Jangan langsung Clone dari branch utama.
 
@@ -206,7 +209,7 @@ portal-berita
 
 ## Postman Collection
 
-Gunakan `postman collection `berikut untuk testing API pada `backend`
+Gunakan `postman collection`berikut untuk testing API pada `backend`
 
 [Project Internship Portal Berita Winnicode.postman_collection.json](https://drive.google.com/file/d/1SXqXUH2vUllWS_WblsGCDuXjHIjtUS5A/view?usp=drive_link)
 
