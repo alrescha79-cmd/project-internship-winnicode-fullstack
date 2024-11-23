@@ -70,12 +70,12 @@ latestDate: any;
 
 const uniqueData = Object.values(groupedData);
 
-const description = "Here are some categories that Godruoyi is interested in.";
+const description = "Menampilkan semua kategori berita yang ada.";
 const URL = Astro.url.href;
 ---
 
 <BaseLayout
-    title="All Categories"
+    title="Semua Kategori"
     description={description}
     structuredData={{
         "@context": "https://schema.org",
@@ -83,7 +83,7 @@ const URL = Astro.url.href;
         "inLanguage": "en-US",
         "@id": URL,
         "url": URL,
-        "name": `All Categories - ${SITE.title}`,
+        "name": `Semua Kategori - ${SITE.title}`,
         "description": description,
         "isPartOf": {
             "@type": "WebSite",
@@ -93,7 +93,7 @@ const URL = Astro.url.href;
         },
     }}
 >
-    <MainSection title="Categories" subTitle={description} />
+    <MainSection title="Kategori" subTitle={description} />
 
     <section
         class="mx-auto px-4 py-10 sm:px-6 lg:px-8 lg:pt-10 lg:py-14 2xl:max-w-full"
@@ -106,7 +106,7 @@ const URL = Astro.url.href;
                     <BlogCategory
                         slug={`${item.category}`}
                         title={item.category}
-                        description={`Total news: ${item.newsCount}`}
+                        description={`Semua berita yang menampilkan kategori ${item.category}`}
                         count={item.newsCount}
                         publishDate={toDate(
                             item.latestDate,

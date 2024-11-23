@@ -6,8 +6,6 @@ import sitemap from "@astrojs/sitemap";
 import partytown from "@astrojs/partytown";
 import node from "@astrojs/node";
 import { SITE } from "./src/config.ts";
-import { remarkReadingTime } from "./src/support/plugins.ts";
-import { uploadAssetsToS3 } from "./src/support/uploader.ts";
 
 // https://astro.build/config
 export default defineConfig({
@@ -24,9 +22,8 @@ export default defineConfig({
         JavaScript: true,
         SVG: true,
         Logger: 2,
-    }), uploadAssetsToS3()],
+    })],
     markdown: {
-        remarkPlugins: [remarkReadingTime],
         shikiConfig: {
             theme: "github-light",
             themes: {

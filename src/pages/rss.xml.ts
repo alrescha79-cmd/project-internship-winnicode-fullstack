@@ -14,7 +14,7 @@ import { SITE } from "@/config";
 
 export async function GET(context: APIContext) {
     // Get the URL to prepend to relative site links. Based on `site` in `astro.config.mjs`.
-    let baseUrl = context.site?.href || "https://godruoyi.com";
+    let baseUrl = context.site?.href || "https://winnicode.com";
     if (baseUrl.at(-1) === "/") {
         baseUrl = baseUrl.slice(0, -1);
     }
@@ -27,7 +27,7 @@ export async function GET(context: APIContext) {
     const container = await AstroContainer.create({ renderers });
 
     // Load the content collection entries to add to our RSS feed.
-    const posts = (await getCollection("posts")).sort((a, b) =>
+    const posts = (await getCollection("posts")).sort((a: { data: { pubDate: number } }, b: { data: { pubDate: number } }) =>
         a.data.pubDate > b.data.pubDate ? -1 : 1,
     );
 

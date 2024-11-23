@@ -1,11 +1,11 @@
 ---
 import PrimaryCTA from "@components/ui/buttons/PrimaryCTA.astro";
 
-const { title, subTitle, btnExists, btnTitle, btnURL } = Astro.props;
+const { title, category, btnExists, btnTitle, btnURL } = Astro.props;
 
 interface Props {
     title: string;
-    subTitle: string;
+    category: string;
     btnExists?: boolean;
     btnTitle?: string;
     btnURL?: string;
@@ -18,7 +18,7 @@ interface Props {
                 {title}
             </h1>
             <p class="mt-4 text-pretty text-lg text-neutral-600 dark:text-neutral-400">
-                {subTitle}
+                {category}
             </p>
         </div>
     {

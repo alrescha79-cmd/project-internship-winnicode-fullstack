@@ -5,7 +5,7 @@ import Image from "@components/ui/images/Image.astro";
 
 const {
     title,
-    subTitle,
+    category,
     primaryBtn,
     primaryBtnURL,
     secondaryBtn,
@@ -16,7 +16,7 @@ const {
 
 interface Props {
     title: string;
-    subTitle?: string;
+    category?: string;
     primaryBtn?: string;
     primaryBtnURL?: string;
     secondaryBtn?: string;
@@ -31,9 +31,9 @@ interface Props {
         <h1 class="block text-balance text-3xl font-bold tracking-tight text-neutral-800 dark:text-neutral-200 sm:text-4xl lg:text-6xl lg:leading-tight">
             <Fragment set:html={title} />
         </h1>
-        {subTitle && (
+        {category && (
             <p class="mt-6 text-pretty text-lg leading-relaxed text-neutral-700 dark:text-neutral-400 lg:w-4/5">
-                {subTitle}
+                {category}
             </p>
         )}
 

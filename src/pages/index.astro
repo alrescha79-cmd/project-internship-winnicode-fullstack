@@ -3,10 +3,13 @@ import BaseLayout from "@layouts/BaseLayout.astro";
 import BlogRecentCard from "@components/blog/BlogRecentCard.astro";
 import MainSection from "@components/ui/sections/MainSection.astro";
 import { SITE } from "@/config";
+import BlogPerCategory from "@/components/blog/BlogPerCategory.astro";
 
 const response = await fetch(`${import.meta.env.HOST}/news`);
 const result = await response.json();
-const posts = result.data || []; // Ambil data dari API
+const posts = result.data || [];
+
+const uniqueCategories = [...new Set(posts.map((post: { category: string }) => post.category))];
 
 const description = "Berita Terbaru";
 const URL = Astro.url.href;
@@ -31,13 +34,27 @@ const URL = Astro.url.href;
         },
     }}
 >
+    <div class="mt-8 flex flex-wrap gap-4">
+        {uniqueCategories.map(category => (
+            <a
+                href={`/categories/${encodeURIComponent(category as string)}`}
+                class="px-4 py-2 rounded bg-orange-400 text-white hover:bg-orange-500"
+            >
+                {category as string}
+            </a>
+        ))}
+    </div>
+
     <MainSection
-        title="Baca Selengkapnya"
-        subTitle="Baca Selengkapnya"
+        title="Lihat Semua Berita Terbaru"
+        category="Berita Terbaru"
         btnExists={true}
-        btnTitle="All Posts"
+        btnTitle="Semua Berita"
         btnURL="/timeline"
     />
 
     <BlogRecentCard blogs={posts} />
+
+    <BlogPerCategory blogs={posts} />
+
 </BaseLayout>

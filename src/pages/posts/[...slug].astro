@@ -1,31 +1,75 @@
 ---
 import BaseLayout from "@layouts/BaseLayout.astro";
-import BlogComments from "@components/blog/BlogComments";
+import BlogCard from "@components/blog/BlogCard.astro";
 import { timeago } from "@support/time";
-import { SITE, Settings } from "@/config";
+import { SITE } from "@/config";
 
 async function fetchNewsBySlug(slug: string | number | boolean | undefined) {
+    // eslint-disable-next-line style/max-statements-per-line
+    if (!slug) { throw new Error("Slug is undefined"); }
     const response = await fetch(`${import.meta.env.HOST}/news/${encodeURIComponent(slug)}`);
     const data = await response.json();
     return data.data;
 }
 
-const { slug } = Astro.params;
-const post = await fetchNewsBySlug(slug);
-
-if (!post) {
-    throw new Error("Post not found");
+async function fetchLatestNews(excludeSlug: string | undefined) {
+    const response = await fetch(`${import.meta.env.HOST}/news`);
+    const data = await response.json();
+    return data.data
+        .filter((post: { slug: any }) => post.slug !== excludeSlug)
+        .slice(0, 5);
 }
 
-const formattedPubDate = post.pubDate && post.pubDate._seconds
-    ? new Date(post.pubDate._seconds * 1000).toISOString()
-    : post.pubDate;
+const { slug } = Astro.params;
+const post = await fetchNewsBySlug(slug);
+// eslint-disable-next-line style/max-statements-per-line
+if (!post) { throw new Error("Post not found"); }
 
+const latestPosts = await fetchLatestNews(slug);
+
+function formatDate(dateInput: string | number | Date) {
+    const days = ["Minngu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
+    const months = [
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+        "August",
+        "September",
+        "October",
+        "November",
+        "December",
+    ];
+
+    const date = typeof dateInput === "object" && dateInput !== null && "_seconds" in dateInput
+        ? new Date((dateInput as { _seconds: number })._seconds * 1000)
+        : new Date(dateInput);
+    const dayName = days[date.getDay()];
+    const day = date.getDate();
+    const month = months[date.getMonth()];
+    const year = date.getFullYear();
+
+    return `${dayName}, ${day} ${month} ${year}`;
+}
+
+function calculateReadingTime(content: { split: (arg0: RegExp) => { (): any; new(): any; length: any } }) {
+    const words = content.split(/\s+/).length;
+    const wordsPerMinute = 200;
+    const readingTime = Math.ceil(words / wordsPerMinute);
+    return `${readingTime} menit membaca`;
+}
+
+const formattedCreatedAt = formatDate(post.createdAt);
 const bannerImage = post.banner || post.thumbnailURL;
 const category = post.category;
 const tags = post.tags ?? [category];
 const URL = Astro.url.href;
 const ogImage = bannerImage;
+
+const minutesRead = calculateReadingTime(post.content);
 ---
 
 <BaseLayout
@@ -40,8 +84,8 @@ const ogImage = bannerImage;
         "description": post.description,
         "image": [ogImage],
         "headline": post.title,
-        "datePublished": formattedPubDate,
-        "dateModified": formattedPubDate,
+        "datePublished": formattedCreatedAt,
+        "dateModified": formattedCreatedAt,
         "author": [
             {
                 "@type": "Person",
@@ -52,6 +96,10 @@ const ogImage = bannerImage;
     }}
 >
     <section class="mx-auto max-w-6xl px-4 pb-12 pt-8 sm:px-6 lg:px-8 lg:pt-12">
+        <div class="flex justify-between mx-4 my-2 text-balance font-bold tracking-tight text-neutral-800 dark:text-neutral-300">
+            <p>Ditulis oleh {post.author}</p>
+            <p>{formattedCreatedAt}</p>
+        </div>
         <div class="shadow-none sm:shadow-sm mt-4 sm:mt-0">
             <div class="max-w-6xl">
                 <img
@@ -77,13 +125,13 @@ const ogImage = bannerImage;
                             </svg>
                         </li>
                         <li class="inline-flex items-center text-sm text-neutral-500 hover:text-neutral-600 focus:outline-none focus:text-neutral-600 dark:text-neutral-500 dark:hover:text-neutral-400 dark:focus:text-neutral-400">
-                            {timeago(formattedPubDate)}
+                            {timeago(new Date(formattedCreatedAt))}
                             <svg class="flex-shrink-0 size-5 text-neutral-500 dark:text-neutral-600 mx-2" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                                 <path d="M6 13L10 3" stroke="currentColor" stroke-linecap="round"></path>
                             </svg>
                         </li>
                         <li class="inline-flex items-center text-sm text-neutral-500 hover:text-neutral-600 focus:outline-none focus:text-neutral-600 dark:text-neutral-500 dark:hover:text-neutral-400 dark:focus:text-neutral-400" aria-current="page">
-                            {post.minutesRead}
+                            {minutesRead}
                         </li>
                     </ol>
                 </div>
@@ -101,12 +149,23 @@ const ogImage = bannerImage;
                 </div>
             </div>
         </div>
-        {Settings.Comment.enable && <div class="my-10"><BlogComments client:only="react" /></div>}
     </section>
-    <style is:inline>
-        html.dark .astro-code, html.dark .astro-code span {
-            color: var(--shiki-dark) !important;
-            background-color: var(--shiki-dark-bg) !important;
-        }
-    </style>
+    <section class="mx-auto mt-4 max-w-6xl px-4 pb-12 pt-8 sm:px-6 lg:px-8 lg:pt-12">
+        <div class="sm:dark:bg-neutral-900/30 sm:bg-neutral-100 px-0 sm:px-6 md:px-10 lg:px-14 py-6">
+            <h2 class="text-2xl font-bold text-neutral-800 dark:text-neutral-300">Berita Lainnya</h2>
+            <div class="grid sm:grid-cols-2 lg:grid-cols-3 items-center gap-6 md:gap-10">
+                {latestPosts.map((latestPost: { id: any; slug: any; title: any; author: any; thumbnailURL: any; createdAt: any; category: any }) => (
+                    <BlogCard
+                        key={latestPost.id}
+                        slug={latestPost.slug}
+                        title={latestPost.title}
+                        author={latestPost.author}
+                        thumbnailURL={latestPost.thumbnailURL}
+                        publishDate={formatDate(latestPost.createdAt)}
+                        category={latestPost.category}
+                    />
+                ))}
+            </div>
+        </div>
+    </section>
 </BaseLayout>

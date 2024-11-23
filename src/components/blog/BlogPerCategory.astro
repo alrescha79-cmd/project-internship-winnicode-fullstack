@@ -1,0 +1,75 @@
+---
+const response = await fetch(`${import.meta.env.HOST}/news`);
+const result = await response.json();
+const posts = result.data || [];
+
+const groupedByCategory: { [key: string]: { slug: string; title: string; createdAt: string; author: string }[] } = posts.reduce(
+    (acc: { [x: string]: any[] }, post: { category: string | number }) => {
+        if (!acc[post.category]) {
+            acc[post.category] = [];
+        }
+        acc[post.category].push(post);
+        return acc;
+    },
+    {},
+);
+
+function formatDate(dateInput: string | number | Date) {
+    const days = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
+    const months = [
+        "Januari",
+        "Februari",
+        "Maret",
+        "April",
+        "Mei",
+        "Juni",
+        "Juli",
+        "Agustus",
+        "September",
+        "Oktober",
+        "November",
+        "Desember",
+    ];
+
+    const date
+        = typeof dateInput === "object" && dateInput !== null && "_seconds" in dateInput
+            ? new Date((dateInput as { _seconds: number })._seconds * 1000)
+            : new Date(dateInput);
+    const dayName = days[date.getDay()];
+    const day = date.getDate();
+    const month = months[date.getMonth()];
+    const year = date.getFullYear();
+
+    return `${dayName}, ${day} ${month} ${year}`;
+}
+---
+
+<section class="mx-auto max-w-[85rem] px-4 py-8 sm:px-6 lg:px-8 my-4">
+    <h1 class="text-3xl font-bold mb-4 text-neutral-800 dark:text-neutral-200">
+        Berita per Kategori
+    </h1>
+    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {Object.entries(groupedByCategory).map(([category, articles]) => (
+            <div class="bg-neutral-100 dark:bg-neutral-900/30 rounded-lg p-4 shadow-lg">
+                <h2 class="text-xl font-bold mb-4 text-neutral-800 dark:text-neutral-100">
+                    {category}
+                </h2>
+                <ul class="space-y-2">
+                    {articles.slice(0, 5).map((article: { slug: string; title: string; createdAt: string; author: string }) => (
+                        <li>
+                            <a
+                                href={`/posts/${article.slug}`}
+                                class="text-neutral-800 hover:text-orange-400 dark:text-neutral-100 dark:hover:text-orange-300 transition duration-200"
+                            >
+                                <div class="text-base">{article.title}</div>
+                                <p class="text-sm text-neutral-600 dark:text-neutral-500 mt-1">
+                                    {formatDate(article.createdAt)} - {article.author}
+                                </p>
+                            </a>
+                        </li>
+                    ))}
+                </ul>
+            </div>
+        ))}
+    </div>
+</section>

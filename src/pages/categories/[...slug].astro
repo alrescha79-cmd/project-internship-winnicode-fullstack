@@ -30,11 +30,40 @@ async function fetchNewsCategories() {
 }
 
 await fetchNewsCategories();
+
+function formatDate(dateInput: string | number | Date) {
+    const days = ["Minngu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
+    const months = [
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+        "August",
+        "September",
+        "October",
+        "November",
+        "December",
+    ];
+
+    const date = typeof dateInput === "object" && dateInput !== null && "_seconds" in dateInput
+        ? new Date((dateInput as { _seconds: number })._seconds * 1000)
+        : new Date(dateInput);
+    const dayName = days[date.getDay()];
+    const day = date.getDate();
+    const month = months[date.getMonth()];
+    const year = date.getFullYear();
+
+    return `${dayName}, ${day} ${month} ${year}`;
+}
+
 ---
 
 <BaseLayout
-    title={`News in ${category}`}
-    description={`All news in ${category}`}
+    title={`${category}`}
+    description={`Semua berita tentang ${category}`}
     structuredData={{
         "@context": "https://schema.org",
         "@type": "WebPage",
@@ -42,19 +71,19 @@ await fetchNewsCategories();
         "@id": URL,
         "url": URL,
         "name": `${category} - ${SITE.title}`,
-        "description": `All news in ${category}`,
+        "description": `Semua berita tentang ${category}`,
         "isPartOf": {
             "@type": "WebSite",
             "url": categoriesURL,
-            "name": `All Categories - ${SITE.title}`,
+            "name": `Semua Kategori - ${SITE.title}`,
         },
     }}
 >
     <MainSection
-        title={`Category: ${category}`}
-        subTitle={`All news in ${category}`}
+        title={`Kategori ${category}`}
+        subTitle={`Semua berita tentang ${category}`}
         btnExists={true}
-        btnTitle="Go to Categories"
+        btnTitle="Lihat Semua Kategori"
         btnURL="/categories"
     />
 
@@ -76,10 +105,8 @@ await fetchNewsCategories();
                             key={post.id}
                             slug={post.slug}
                             title={post.title}
-                            publishDate={new Date(
-                                post.createdAt._seconds * 1000,
-                            ).toLocaleDateString()}
-                            category={post.category}
+                            author={post.author}
+                            publishDate={formatDate(post.createdAt)}
                             thumbnailURL={post.thumbnailURL}
                         />
                     ))

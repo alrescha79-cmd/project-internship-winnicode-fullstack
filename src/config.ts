@@ -2,7 +2,7 @@ import type { NavigationLink, Site } from "./types.ts";
 
 export const SITE: Site = {
     author: "Anggun Caksono",
-    url: "https://godruoyi.com",
+    url: "https://winnicode.com",
     title: "Winnicode Garuda Teknologi",
     description:
         "Sistem Jurnalistik Terpadu merupakan sebuah inovasi yang bertujuan untuk menyatukan berbagai aspek dalam dunia jurnalisme, mulai dari pengumpulan informasi, proses penyuntingan, hingga publikasi konten. Platform ini dirancang untuk menjadi wadah yang komprehensif bagi para jurnalis dan penerbit dalam menjalankan tugas mereka dengan lebih efektif dan efisien",
@@ -11,39 +11,25 @@ export const SITE: Site = {
 };
 
 export const NavigationLinks: NavigationLink[] = [
-    { name: "Posts", url: "/posts" },
-    { name: "Category", url: "/categories" },
-    { name: "Timeline", url: "/timeline" },
-    { name: "About", url: "/posts/gblog" },
-    { name: "Friends", url: "/friends" },
-];
-
-export const DashboardLinks: NavigationLink[] = [
-    { name: "Dashboard", url: "/dashboard" },
-    { name: "Kelola Berita", url: "/dashboard/berita" },
-    { name: "Tambah Berita", url: "/dashboard/post" },
-    { name: "Kategori", url: "/dashboard/kategori" },
-    { name: "Comments", url: "/dashboard/comments" },
-    { name: "Kelola User", url: "/dashboard/user" },
-    { name: "Settings", url: "/dashboard/settings" },
+    { name: "Beranda", url: "/posts" },
+    { name: "Kategori", url: "/categories" },
+    { name: "Semua Berita", url: "/timeline" },
 ];
 
 export const FooterLinks = [
     {
-        section: "Blog",
+        section: "Winnicode Garuda Teknologi",
         links: [
-            { name: "Posts", url: "/posts" },
-            { name: "Timeline", url: "/timeline" },
-            { name: "Categories", url: "/categories" },
-            { name: "About Me", url: "/posts/about-godruoyi" },
+            { name: "Beranda", url: "/posts" },
+            { name: "Semua Berita", url: "/timeline" },
+            { name: "Kategori", url: "/categories" },
         ],
     },
     {
         section: "Other",
         links: [
             { name: "RSS", url: "/rss.xml" },
-            { name: "Site Map", url: "/sitemap-index.xml" },
-            { name: "Twitter", url: "https://x.com/godruoyi" },
+            // { name: "Site Map", url: "/sitemap-index.xml" },
         ],
     },
 ];
@@ -59,46 +45,6 @@ export const Settings = {
         enable: true,
         dataWebsiteID: "bf63658a-9418-4f39-a6a1-5a0cedb6e429",
     },
-
-    Comment: {
-        // todo: should I use meta or process?
-        // process reports an error when used locally,
-        // and meta cannot retrieve environment variables in Cloudflare environment.
-        // enable: !!(import.meta.env.COMMENT_ENABLE),
-        enable: !!process.env.COMMENT_ENABLE,
-
-        // please visit https://giscus.app/ to learn how to configure it.
-        // You can also check out this article: https://liruifengv.com/posts/add-comments-to-astro/.
-        giscus: {
-            repo: "godruoyi/gblog",
-            repoId: "MDEwOlJlcG9zaXRvcnkxMjcyODI0NzA",
-            category: "Announcements",
-            categoryId: "DIC_kwDOB5YtJs4CfZnX",
-            darkThem: "noborder_gray",
-            lightThem: "light",
-        },
-    },
-
-    Assets: {
-        // If you don't want to upload the build assert(image/js/css/etc...) to anywhere, just set this to false
-        uploadAssetsToS3: !!process.env.S3_ENABLE,
-        config: {
-            // see https://github.com/syhily/astro-uploader to get how to configure the uploader,
-            // The following configuration will upload the compiled `assets` folder to S3 or R2.
-            // You can set a separate domain for it so that you can access all resources using a CDN domain name.
-            //
-            // For example: https://images.godruoyi.com/gblog/assets/brand-logo.webp
-            //
-            // Note that you may also need to modify `build.assetsPrefix` in `astro.config.mjs` if you want to
-            // automatically replace all images/js/css with a CDN link.
-            paths: ["assets"],
-            endpoint: process.env.S3_ENDPOINT as string,
-            bucket: process.env.S3_BUCKET as string,
-            accessKey: process.env.S3_ACCESS_KEY as string,
-            secretAccessKey: process.env.S3_SECRET_ACCESS_KEY as string,
-            root: "gblog",
-        },
-    },
 };
 
 export const SEO = {
@@ -107,7 +53,7 @@ export const SEO = {
     structuredData: {
         "@context": "https://schema.org",
         "@type": "WebPage",
-        "inLanguage": "en-US",
+        "inLanguage": "id-ID",
         "@id": SITE.url,
         "url": SITE.url,
         "name": SITE.title,

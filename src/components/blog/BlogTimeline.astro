@@ -1,6 +1,35 @@
 ---
 const { blog } = Astro.props;
 
+function formatDate(dateInput: string | number | Date) {
+    const days = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
+    const months = [
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+        "August",
+        "September",
+        "October",
+        "November",
+        "December",
+    ];
+
+    const date = typeof dateInput === "object" && dateInput !== null && "_seconds" in dateInput
+        ? new Date((dateInput as { _seconds: number })._seconds * 1000)
+        : new Date(dateInput);
+    const dayName = days[date.getDay()];
+    const day = date.getDate();
+    const month = months[date.getMonth()];
+    const year = date.getFullYear();
+
+    return `${dayName}, ${day} ${month} ${year}`;
+}
+
+const formattedCreatedAt = formatDate(blog.createdAt);
 ---
 
 <div class="max-w-3xl mx-auto">
@@ -28,13 +57,14 @@ const { blog } = Astro.props;
                 </h3>
                 <span
                     class="tracking-wide text-xs font-medium text-neutral-600 dark:text-neutral-500 group-hover:text-neutral-600 dark:group-hover:text-neutral-400"
-                >{blog.pubDate}</span
                 >
+                    {formattedCreatedAt}
+                </span>
             </a>
             <p
                 class="mt-1.5 text-base text-neutral-600 group-hover:text-neutral-500 dark:text-neutral-500 dark:group-hover:text-neutral-400"
             >
-                {blog.description}
+                {blog.category} - {blog.author}
             </p>
         </div>
     </div>

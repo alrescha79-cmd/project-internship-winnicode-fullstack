@@ -7,13 +7,14 @@ const response = await fetch(`${import.meta.env.HOST}/news`);
 const result = await response.json();
 const posts = result.data || [];
 
+
 const description = `Menampilkan semua berita, saat ini ada ${posts.length} artikel.`;
 
 const URL = Astro.url.href;
 ---
 
 <BaseLayout
-    title="Timeline"
+    title="Semua Berita"
     description={description}
     structuredData={{
         "@context": "https://schema.org",
@@ -21,7 +22,7 @@ const URL = Astro.url.href;
         "inLanguage": "en-US",
         "@id": URL,
         "url": URL,
-        "name": `Timeline - ${SITE.title}`,
+        "name": `Semua Berita - ${SITE.title}`,
         "description": description,
         "isPartOf": {
             "@type": "WebSite",
@@ -38,7 +39,7 @@ const URL = Astro.url.href;
             <h2
                 class="text-3xl font-bold text-neutral-800 dark:text-neutral-200 md:text-4xl md:leading-tight"
             >
-                Timeline
+                Semua Berita
             </h2>
             <p
                 class="mt-4 text-lg group text-pretty text-neutral-600 dark:text-neutral-400"
