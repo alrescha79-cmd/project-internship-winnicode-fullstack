@@ -1,94 +1,60 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   CAvatar,
-  CBadge,
   CDropdown,
-  CDropdownDivider,
-  CDropdownHeader,
-  CDropdownItem,
   CDropdownMenu,
+  CDropdownItem,
   CDropdownToggle,
+  CSpinner,
 } from '@coreui/react'
-import {
-  cilBell,
-  cilCreditCard,
-  cilCommentSquare,
-  cilEnvelopeOpen,
-  cilFile,
-  cilLockLocked,
-  cilSettings,
-  cilTask,
-  cilUser,
-} from '@coreui/icons'
-import CIcon from '@coreui/icons-react'
-
-import avatar8 from './../../assets/images/avatars/8.jpg'
+import useFirebaseAuthToken from '../../hook/useFirebaseAuthToken'
+import { fetchData } from '../../api'
+import { useNavigate } from 'react-router-dom'
 
 const AppHeaderDropdown = () => {
+  const user = useFirebaseAuthToken()
+  const [profilePicture, setProfilePicture] = useState(null)
+  const [userId, setUserId] = useState(null)
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    const getUserData = async () => {
+      if (user && user.uid && user.token) {
+        try {
+          const response = await fetchData(`${import.meta.env.VITE_API}/journalist/${user.uid}`, user.token)
+          setProfilePicture(response.profilePicture)
+          setUserId(response.id) // Assuming the API returns the user's ID
+        } catch (error) {
+          console.error('Error fetching user data:', error)
+        }
+      }
+    }
+
+    getUserData()
+  }, [user])
+
+  const handleNavigate = (path) => {
+    navigate(path)
+  }
+  
+
   return (
     <CDropdown variant="nav-item">
       <CDropdownToggle placement="bottom-end" className="py-0 pe-0" caret={false}>
-        <CAvatar src={avatar8} size="md" />
+        {profilePicture ? (
+          <CAvatar src={profilePicture} size="md" />
+        ) : (
+          <CSpinner color="primary" />
+        )}
       </CDropdownToggle>
-      {/* <CDropdownMenu className="pt-0" placement="bottom-end">
-        <CDropdownHeader className="bg-body-secondary fw-semibold mb-2">Account</CDropdownHeader>
-        <CDropdownItem href="#">
-          <CIcon icon={cilBell} className="me-2" />
-          Updates
-          <CBadge color="info" className="ms-2">
-            42
-          </CBadge>
+      <CDropdownMenu className="pt-0" placement="bottom-end">
+        <CDropdownItem onClick={() => handleNavigate(`/author/detail/${userId}`)}>
+          Detail
         </CDropdownItem>
-        <CDropdownItem href="#">
-          <CIcon icon={cilEnvelopeOpen} className="me-2" />
-          Messages
-          <CBadge color="success" className="ms-2">
-            42
-          </CBadge>
+        <CDropdownItem onClick={() => handleNavigate(`/author/edit/${userId}`)}>
+          Edit
         </CDropdownItem>
-        <CDropdownItem href="#">
-          <CIcon icon={cilTask} className="me-2" />
-          Tasks
-          <CBadge color="danger" className="ms-2">
-            42
-          </CBadge>
-        </CDropdownItem>
-        <CDropdownItem href="#">
-          <CIcon icon={cilCommentSquare} className="me-2" />
-          Comments
-          <CBadge color="warning" className="ms-2">
-            42
-          </CBadge>
-        </CDropdownItem>
-        <CDropdownHeader className="bg-body-secondary fw-semibold my-2">Settings</CDropdownHeader>
-        <CDropdownItem href="#">
-          <CIcon icon={cilUser} className="me-2" />
-          Profile
-        </CDropdownItem>
-        <CDropdownItem href="#">
-          <CIcon icon={cilSettings} className="me-2" />
-          Settings
-        </CDropdownItem>
-        <CDropdownItem href="#">
-          <CIcon icon={cilCreditCard} className="me-2" />
-          Payments
-          <CBadge color="secondary" className="ms-2">
-            42
-          </CBadge>
-        </CDropdownItem>
-        <CDropdownItem href="#">
-          <CIcon icon={cilFile} className="me-2" />
-          Projects
-          <CBadge color="primary" className="ms-2">
-            42
-          </CBadge>
-        </CDropdownItem>
-        <CDropdownDivider />
-        <CDropdownItem href="#">
-          <CIcon icon={cilLockLocked} className="me-2" />
-          Lock Account
-        </CDropdownItem>
-      </CDropdownMenu> */}
+      </CDropdownMenu>
     </CDropdown>
   )
 }

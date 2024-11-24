@@ -1,32 +1,82 @@
-import React, { useEffect, useState } from 'react'
-import useFirebaseAuthToken from '../../hook/useFirebaseAuthToken'
-import { fetchData } from '../../api'
+import React, { useEffect, useState } from 'react';
+import NewsCategoryChart from './NewsCategoryChart';
+import JournalistPostsChart from './JournalistPostsChart';
+import useFirebaseAuthToken from '../../hook/useFirebaseAuthToken';
+import { fetchData } from '../../api';
+import AuthorCharts from './AuthorCharts';
 
 const Dashboard = () => {
-  const [data, setData] = useState(null)
-  const token = useFirebaseAuthToken()
+  const [adminName, setAdminName] = useState('Admin');
+  const [newsCategoryData, setNewsCategoryData] = useState([]);
+  const [journalistData, setJournalistData] = useState([]);
+  const user = useFirebaseAuthToken();
 
   useEffect(() => {
-    const getData = async () => {
-      if (token) {
+    const fetchDashboardData = async () => {
+      if (user?.token) {
         try {
-          const response = await fetchData(`${import.meta.env.VITE_API}/news`, token)
-          setData(response.data)
-          // console.log(response.data)
+          const [userData, categoriesResponse, journalistsResponse] = await Promise.all([
+            fetchData(`${import.meta.env.VITE_API}/journalist/${user.uid}`, user.token),
+            fetchData(`${import.meta.env.VITE_API}/news`, user.token),
+            fetchData(`${import.meta.env.VITE_API}/journalist`, user.token),
+          ]);
+    
+          setAdminName(userData?.name || 'Admin');
+
+          // semua kategori berita berdasarkan user.uid
+          const authorCategories = categoriesResponse.data.filter(
+            news => news.authorId === user.uid
+          );
+
+          console.log('authorCategories:', authorCategories);
+
+          const categories = Array.isArray(categoriesResponse.data)
+            ? categoriesResponse.data
+            : categoriesResponse;
+    
+          const groupedData = categories.reduce((acc, news) => {
+            const category = news.category;
+            if (!acc[category]) {
+              acc[category] = { name: category, newsCount: 0 };
+            }
+            acc[category].newsCount += 1;
+            return acc;
+          }, {});
+    
+          setNewsCategoryData(Object.values(groupedData));
+    
+          setJournalistData(journalistsResponse.data || journalistsResponse);
         } catch (error) {
-          console.error('Error fetching data:', error)
+          console.error('Error fetching dashboard data:', error);
         }
       }
-    }
+    };
+    
 
-    getData()
-  }, [token])
+    fetchDashboardData();
+  }, [user]);
 
   return (
-    <>
-      <h1>Dashboard</h1>
-    </>
-  )
-}
+    <div>
+      <h1 className='text-center mb-4'>
+        Halo <b>{adminName}</b>, Selamat Datang di Dashboard Winnicode
+      </h1>
+      <div className='my-5 mx-auto p-4'>
+      <h2 className='text-center'>Statistik Postingan</h2>
+      <AuthorCharts />
+      </div>
+      <div className="d-flex justify-content-between mt-4">
+        <div>
+          <h2>Berita Berdasarkan Kategori</h2>
+          <NewsCategoryChart data={newsCategoryData} />
+        </div>
+        <div>
+          <h2>Jumlah Postingan Penulis</h2>
+          <JournalistPostsChart data={journalistData} />
+        </div>
+      </div>
+    </div>
+  );
+};
 
-export default Dashboard
+export default Dashboard;

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import useFirebaseAuthToken from '../../../hook/useFirebaseAuthToken'
-import { fetchData, postData } from '../../../api'
+import { fetchData, putData } from '../../../api'
 import { CAlert, CButton, CForm, CImage } from '@coreui/react'
 import ContentEditor from '../../../components/ContentEditor'
 import CategorySelect from '../../../components/CategorySelect'
@@ -121,7 +121,7 @@ function EditPage() {
             formData.append('category', category)
             formData.append('content', content)
 
-            const response = await postData(`${import.meta.env.VITE_API}/news/${slug}`, formData, user.token)
+            const response = await putData(`${import.meta.env.VITE_API}/news/${slug}`, formData, user.token)
 
             setSuccess('Berita berhasil diperbarui!')
             setTimeout(() => setSuccess(''), 3000)
