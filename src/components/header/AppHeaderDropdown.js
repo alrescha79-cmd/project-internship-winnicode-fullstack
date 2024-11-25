@@ -23,7 +23,7 @@ const AppHeaderDropdown = () => {
         try {
           const response = await fetchData(`${import.meta.env.VITE_API}/journalist/${user.uid}`, user.token)
           setProfilePicture(response.profilePicture)
-          setUserId(response.id) // Assuming the API returns the user's ID
+          setUserId(response.id)
         } catch (error) {
           console.error('Error fetching user data:', error)
         }

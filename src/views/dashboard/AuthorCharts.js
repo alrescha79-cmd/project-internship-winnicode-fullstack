@@ -1,22 +1,32 @@
 import React from 'react';
 import { CChart } from '@coreui/react-chartjs';
 
-const AuthorCharts = () => {
+const AuthorCharts = ({ authorCategories = [] }) => {
+    const groupedData = authorCategories.reduce((acc, item) => {
+        if (!acc[item.category]) {
+            acc[item.category] = 0;
+        }
+        acc[item.category] += 1;
+        return acc;
+    }, {});
+
+    const labels = Object.keys(groupedData);
+    const data = Object.values(groupedData);
 
     return (
         <div>
             <CChart
                 type="line"
                 data={{
-                    labels: ["Teknologi", "Lainnya", "Politik", "Olahraga", "Gaya Hidup"],
+                    labels: labels,
                     datasets: [
                         {
-                            label: "Nama Penulis",
+                            label: "Jumlah Postingan per Kategori",
                             backgroundColor: "#FFCE56",
                             borderColor: "#FFCE56",
                             pointBackgroundColor: "#FFCE56",
                             pointBorderColor: "#E46651",
-                            data: [2, 0, 1, 1, 1],
+                            data: data,
                         },
                     ],
                 }}
@@ -25,8 +35,8 @@ const AuthorCharts = () => {
                         legend: {
                             labels: {
                                 color: getComputedStyle(document.documentElement).getPropertyValue('--cui-body-color'),
-                            }
-                        }
+                            },
+                        },
                     },
                     scales: {
                         x: {
@@ -51,5 +61,6 @@ const AuthorCharts = () => {
         </div>
     );
 };
+
 
 export default AuthorCharts;

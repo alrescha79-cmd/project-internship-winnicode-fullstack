@@ -41,7 +41,7 @@ const ContentEditor = ({ value, onChange }) => {
     return (
         <div>
             <label htmlFor="editor">Isi Berita</label>
-            <div id="editor" ref={editorRef} style={{ height: '200px' }}></div>
+            <div id="editor" ref={editorRef} style={{ height: '600px' }}></div>
         </div>
     )
 }

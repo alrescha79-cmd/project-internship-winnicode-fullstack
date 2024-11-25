@@ -78,7 +78,6 @@ const NewPost = () => {
       formData.append('content', content)
 
       const response = await postData(`${import.meta.env.VITE_API}/news`, formData, user.token)
-      // console.log('Response:', response)
 
       setTitle('')
       setImage('')
